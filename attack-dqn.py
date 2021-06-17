@@ -43,9 +43,10 @@ while True:
         state_v = torch.tensor(np.array([state], copy=False))
         q_vals = net(state_v).data.numpy()[0]
         orig_action = np.argmax(q_vals)
+        orig_action_tensor = torch.tensor(np.array([orig_action], copy=False))
         if attack:
                 rfgsmIns = RFGSM(model = net)
-                adv_state = rfgsmIns.forward(state_v,torch.from_numpy(orig_action))
+                adv_state = rfgsmIns.forward(state_v,orig_action_tensor)
                 q_vals = net(adv_state).data.numpy()[0]
                 adv_action = np.argmax(q_vals)
                 state, reward, done, _ = env.step(adv_action)
