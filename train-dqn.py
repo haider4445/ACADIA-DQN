@@ -10,7 +10,6 @@ import collections
 from dqn import DQN, ExperienceReplay, Agent
 from wrappers import make_env
 from torch.utils.tensorboard import SummaryWriter
-%load_ext tensorboard
 import datetime
 Experience = collections.namedtuple('Experience', field_names=['state', 'action', 'reward', 'done', 'new_state'])
 warnings.filterwarnings('ignore')
