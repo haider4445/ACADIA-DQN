@@ -18,8 +18,8 @@ _ = _display.start()
 # Taken (partially) from 
 # https://github.com/PacktPublishing/Deep-Reinforcement-Learning-Hands-On/blob/master/Chapter06/03_dqn_play.py
 
-
-model='PongNoFrameskip-v4-best.dat'
+DirectoryPath = '/content/gdrive/MyDrive/testfolder/'
+model=DirectoryPath + 'PongNoFrameskip-v4-best.dat'
 record_folder="video"  
 visualize=True
 
