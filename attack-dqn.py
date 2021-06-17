@@ -45,7 +45,7 @@ while True:
         orig_action = np.argmax(q_vals)
         if attack:
                 rfgsmIns = RFGSM(model = net)
-                adv_state = rfgsmIns.forward(state_v,orig_action)
+                adv_state = rfgsmIns.forward(state_v,torch.from_numpy(orig_action))
                 q_vals = net(adv_state).data.numpy()[0]
                 adv_action = np.argmax(q_vals)
                 state, reward, done, _ = env.step(adv_action)
