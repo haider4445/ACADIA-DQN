@@ -32,8 +32,10 @@ net.load_state_dict(torch.load(model, map_location=lambda storage, loc: storage)
 
 state = env.reset()
 total_reward = 0.0
-steps = 0
+Totalsteps = 0
 successes = 0
+adv_actions = []
+orig_actions = []
 
 while True:
         attack = True
@@ -50,8 +52,10 @@ while True:
                 q_vals = net(adv_state).data.numpy()[0]
                 adv_action = np.argmax(q_vals)
                 state, reward, done, _ = env.step(adv_action)
-                steps +=1
+                Totalsteps +=1
                 if adv_action != orig_action:
+                    adv_actions.append(adv_action)
+                    orig_actions.append(orig_action)
                     successes +=1
         else:
             state, reward, done, _ = env.step(orig_action)
@@ -63,8 +67,11 @@ while True:
             delta = 1/FPS - (time.time() - start_ts)
             if delta > 0:
                 time.sleep(delta)
+successRate = successes/Totalsteps
 print("Total reward: %.2f" % total_reward)
-print("Success rate: %.2f" % successes/steps)
+print("Success rate: %.2f" % successRate)
+print("Adversarial Actions: ", adv_actions)
+print("Predicted DRL agent Actions: ", orig_actions)
 
 if record_folder:
         env.close()
