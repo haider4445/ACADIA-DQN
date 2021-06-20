@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from ..attack import Attack
+from Attack import Attack
 
 
 class CW(Attack):
