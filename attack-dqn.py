@@ -7,9 +7,24 @@ import pyvirtualdisplay
 from dqn import DQN, ExperienceReplay, Agent
 from wrappers import make_env
 from rfgsm import RFGSM
+from fgsm import FGSM
+from cw import CW
+import argparse
+import os
+import sys
 
+parser = argparse.ArgumentParser(description = "Fast Undetectable Attack")
+parser.add_argument('Path', metavar = 'path', type = str, help = 'Complete path to model')
+parser.add_argument('env', type = str, help = 'Environment name like PongNoFrameskip-v4')
+parser.add_argument('perturbationType', type = str, help = 'Perturbation Type: fgsm, rfgsm, cw, optimal')
+args = parser.parser_args()
+model = args.Path
+DEFAULT_ENV_NAME = args.env #"PongNoFrameskip-v4"
+perturbationType = args.perturbationType
+if not os.path.isdir(model):
+    print('the path specified does not exist')
+    sys.exit()
 
-DEFAULT_ENV_NAME = "PongNoFrameskip-v4"
 FPS = 25
 
 _display = pyvirtualdisplay.Display(visible=False, size=(1400, 900))
@@ -19,8 +34,9 @@ _ = _display.start()
 # Taken (partially) from 
 # https://github.com/PacktPublishing/Deep-Reinforcement-Learning-Hands-On/blob/master/Chapter06/03_dqn_play.py
 
-DirectoryPath = '/content/gdrive/MyDrive/testfolder/'
-model=DirectoryPath + 'PongNoFrameskip-v4-best.dat'
+#DirectoryPath = '/content/gdrive/MyDrive/testfolder/'
+#model= DirectoryPath + 'PongNoFrameskip-v4-best.dat'
+
 record_folder="video"  
 visualize=True
 
@@ -47,7 +63,14 @@ while True:
         orig_action = np.argmax(q_vals)
         orig_action_tensor = torch.tensor(np.array([orig_action], copy=False))
         if attack:
-                rfgsmIns = RFGSM(model = net)
+                if perturbationType == "optimal":
+                    rfgsmIns = RFGSM(model = net)
+                elif perturbationType == "rfgsm" or perturbationType == "RFGSM" or perturbationType == "Rfgsm":
+                    rfgsmIns = RFGSM(model = net)
+                elif perturbationType == "fgsm" or perturbationType == "FGSM":
+                    rfgsmIns = FGSM(model = net)
+                elif perturbationType == "cw" or perturbationType == "CW":
+                    rfgsmIns = CW(model = net)
                 adv_state = rfgsmIns.forward(state_v,orig_action_tensor)
                 q_vals = net(adv_state).data.numpy()[0]
                 adv_action = np.argmax(q_vals)
