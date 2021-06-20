@@ -27,7 +27,6 @@ if args.attack == 1:
 else:
   attack = False
 
-print(attack)
 print(args)
 
 FPS = 25
