@@ -17,12 +17,17 @@ parser = argparse.ArgumentParser(description = "Fast Undetectable Attack")
 parser.add_argument('-mp','--Path', metavar = 'path', type = str, help = 'Complete path to model')
 parser.add_argument('-e','--env', type = str, help = 'Environment name like PongNoFrameskip-v4')
 parser.add_argument('-p','--perturbationType', type = str, help = 'Perturbation Type: fgsm, rfgsm, cw, optimal')
-parser.add_argument('-a', '--attack', type = str, help = 'Attack or not to attack')
+parser.add_argument('-a', '--attack', type = int, help = 'Attack 1 or not to attack 0')
 args = parser.parse_args()
 model = args.Path
 DEFAULT_ENV_NAME = args.env #"PongNoFrameskip-v4"
 perturbationType = args.perturbationType
-attack = args.attack
+if args.attack == 1:
+  attack = True
+else:
+  attack = False
+
+print(attack)
 print(args)
 
 FPS = 25
@@ -75,10 +80,11 @@ while True:
                 state, reward, done, _ = env.step(adv_action)
                 Totalsteps +=1
                 if adv_action != orig_action:
-                    adv_actions.append(adv_action)
                     orig_actions.append(orig_action)
+                    adv_actions.append(adv_action)
                     successes +=1
         else:
+            orig_actions.append(orig_action)
             state, reward, done, _ = env.step(orig_action)
 
         total_reward += reward
@@ -88,11 +94,13 @@ while True:
             delta = 1/FPS - (time.time() - start_ts)
             if delta > 0:
                 time.sleep(delta)
-successRate = successes/Totalsteps
+
 print("Total reward: %.2f" % total_reward)
-print("Success rate: %.2f" % successRate)
-print("Adversarial Actions: ", adv_actions)
 print("Predicted DRL agent Actions: ", orig_actions)
+if attack:
+  successRate = successes/Totalsteps
+  print("Adversarial Actions: ", adv_actions)
+  print("Success rate: %.2f" % successRate)
 
 if record_folder:
         env.close()
