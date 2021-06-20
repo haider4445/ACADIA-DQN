@@ -14,10 +14,10 @@ import os
 import sys
 
 parser = argparse.ArgumentParser(description = "Fast Undetectable Attack")
-parser.add_argument('Path', metavar = 'path', type = str, help = 'Complete path to model')
-parser.add_argument('env', type = str, help = 'Environment name like PongNoFrameskip-v4')
-parser.add_argument('perturbationType', type = str, help = 'Perturbation Type: fgsm, rfgsm, cw, optimal')
-args = parser.parser_args()
+parser.add_argument('--Path', metavar = 'path', type = str, help = 'Complete path to model')
+parser.add_argument('--env', type = str, help = 'Environment name like PongNoFrameskip-v4')
+parser.add_argument('--perturbationType', type = str, help = 'Perturbation Type: fgsm, rfgsm, cw, optimal')
+args = parser.parse_args()
 model = args.Path
 DEFAULT_ENV_NAME = args.env #"PongNoFrameskip-v4"
 perturbationType = args.perturbationType
