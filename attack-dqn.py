@@ -21,21 +21,15 @@ args = parser.parse_args()
 model = args.Path
 DEFAULT_ENV_NAME = args.env #"PongNoFrameskip-v4"
 perturbationType = args.perturbationType
-if not os.path.isdir(model):
-    print('the path specified does not exist')
-    sys.exit()
-
 print(args)
 
 FPS = 25
-
 _display = pyvirtualdisplay.Display(visible=False, size=(1400, 900))
 _ = _display.start()
 
 
 # Taken (partially) from 
 # https://github.com/PacktPublishing/Deep-Reinforcement-Learning-Hands-On/blob/master/Chapter06/03_dqn_play.py
-
 #DirectoryPath = '/content/gdrive/MyDrive/testfolder/'
 #model= DirectoryPath + 'PongNoFrameskip-v4-best.dat'
 
