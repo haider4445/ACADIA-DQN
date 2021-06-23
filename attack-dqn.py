@@ -12,6 +12,9 @@ from cw import CW
 import argparse
 import os
 import sys
+import time
+start_time_program = time.time()
+
 
 parser = argparse.ArgumentParser(description = "Fast Undetectable Attack")
 parser.add_argument('-mp','--Path', metavar = 'path', type = str, help = 'Complete path to model')
@@ -54,6 +57,7 @@ Totalsteps = 0
 successes = 0
 adv_actions = []
 orig_actions = []
+attack_times = []
 
 while True:
         #attack = True
@@ -65,6 +69,7 @@ while True:
         orig_action = np.argmax(q_vals)
         orig_action_tensor = torch.tensor(np.array([orig_action], copy=False))
         if attack:
+                start_attack = time.time()
                 if perturbationType == "optimal":
                     rfgsmIns = RFGSM(model = net)
                 elif perturbationType == "rfgsm" or perturbationType == "RFGSM" or perturbationType == "Rfgsm":
@@ -74,6 +79,7 @@ while True:
                 elif perturbationType == "cw" or perturbationType == "CW":
                     rfgsmIns = CW(model = net)
                 adv_state = rfgsmIns.forward(state_v,orig_action_tensor)
+                attack_times.append(time.time() - start_attack)
                 q_vals = net(adv_state).data.numpy()[0]
                 adv_action = np.argmax(q_vals)
                 state, reward, done, _ = env.step(adv_action)
@@ -100,6 +106,10 @@ if attack:
   successRate = successes/Totalsteps
   print("Adversarial Actions: ", adv_actions)
   print("Success rate: %.2f" % successRate)
+  print("Total Attack Execution Time: %s" % sum(attack_times))
+  print("Average One Perturbed state generation time: %s" % sum(attack_times)/len(attack_times))
+  print("Attack Times List: %s" % attack_times)
+print("Overall Program Execution Time: %s seconds" % (time.time() - start_time_program))
 
 if record_folder:
         env.close()
