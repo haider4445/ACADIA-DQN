@@ -22,12 +22,17 @@ parser.add_argument('-e','--env', type = str, nargs = "?", default = "PongNoFram
 parser.add_argument('-p','--perturbationType', nargs="?", default="rfgsm", type = str, help = 'Perturbation Type: fgsm, rfgsm, cw, optimal')
 parser.add_argument('-a', '--attack', nargs="?", default=1, type = int, help = 'Attack 1 or not to attack 0')
 parser.add_argument('--stepsRFGSM', nargs = "?", default = 1, type = int, help = "Number of steps of RFGSM attack")
+parser.add_argument('--alphaRFGSM', nargs = "?", default = 8/255, type = int, help = "Alpha (Step Size) of RFGSM attack")
+parser.add_argument('--epsRFGSM', nargs = "?", default = 16/255, type = int, help = "Epsilon (strength) of RFGSM attack")
+
 
 args = parser.parse_args()
 model = args.Path
 DEFAULT_ENV_NAME = args.env #"PongNoFrameskip-v4"
 perturbationType = args.perturbationType
 stepsRFGSM = args.stepsRFGSM
+alphaRFGSM = args.alphaRFGSM
+epsRFGSM = args.epsRFGSM
 if args.attack == 1:
   attack = True
 else:
@@ -76,7 +81,7 @@ while True:
                 if perturbationType == "optimal":
                     rfgsmIns = RFGSM(model = net, steps = stepsRFGSM)
                 elif perturbationType == "rfgsm" or perturbationType == "RFGSM" or perturbationType == "Rfgsm":
-                    rfgsmIns = RFGSM(model = net, steps = stepsRFGSM)
+                    rfgsmIns = RFGSM(model = net, steps = stepsRFGSM, eps = epsRFGSM, alpha = alphaRFGSM)
                 elif perturbationType == "fgsm" or perturbationType == "FGSM":
                     rfgsmIns = FGSM(model = net)
                 elif perturbationType == "cw" or perturbationType == "CW":
