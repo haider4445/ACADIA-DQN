@@ -18,13 +18,16 @@ start_time_program = time.time()
 
 parser = argparse.ArgumentParser(description = "Fast Undetectable Attack")
 parser.add_argument('-mp','--Path', metavar = 'path', type = str, help = 'Complete path to model')
-parser.add_argument('-e','--env', type = str, help = 'Environment name like PongNoFrameskip-v4')
-parser.add_argument('-p','--perturbationType', type = str, help = 'Perturbation Type: fgsm, rfgsm, cw, optimal')
-parser.add_argument('-a', '--attack', type = int, help = 'Attack 1 or not to attack 0')
+parser.add_argument('-e','--env', type = str, nargs = "?", default = "PongNoFrameskip-v4", help = 'Environment name like PongNoFrameskip-v4')
+parser.add_argument('-p','--perturbationType', nargs="?", default="rfgsm", type = str, help = 'Perturbation Type: fgsm, rfgsm, cw, optimal')
+parser.add_argument('-a', '--attack', nargs="?", default=1, type = int, help = 'Attack 1 or not to attack 0')
+parser.add_argument('--stepsRFGSM', nargs = "?", default = 1, type = int, help = "Number of steps of RFGSM attack")
+
 args = parser.parse_args()
 model = args.Path
 DEFAULT_ENV_NAME = args.env #"PongNoFrameskip-v4"
 perturbationType = args.perturbationType
+stepsRFGSM = args.stepsRFGSM
 if args.attack == 1:
   attack = True
 else:
@@ -71,9 +74,9 @@ while True:
         if attack:
                 start_attack = time.time()
                 if perturbationType == "optimal":
-                    rfgsmIns = RFGSM(model = net)
+                    rfgsmIns = RFGSM(model = net, steps = stepsRFGSM)
                 elif perturbationType == "rfgsm" or perturbationType == "RFGSM" or perturbationType == "Rfgsm":
-                    rfgsmIns = RFGSM(model = net)
+                    rfgsmIns = RFGSM(model = net, steps = stepsRFGSM)
                 elif perturbationType == "fgsm" or perturbationType == "FGSM":
                     rfgsmIns = FGSM(model = net)
                 elif perturbationType == "cw" or perturbationType == "CW":
