@@ -11,12 +11,17 @@ from dqn import DQN, ExperienceReplay, Agent
 from wrappers import make_env
 from torch.utils.tensorboard import SummaryWriter
 import datetime
+import argparse
 Experience = collections.namedtuple('Experience', field_names=['state', 'action', 'reward', 'done', 'new_state'])
 warnings.filterwarnings('ignore')
 
+parser = argparse.ArgumentParser(description = "Fast Undetectable Attack")
+parser.add_argument('-mp','--Path', metavar = 'path', nargs = "?", default = '/content/gdrive/MyDrive/testfolder/', type = str, help = 'Complete path to model folder')
+parser.add_argument('-e','--env', type = str, nargs = "?", default = "PongNoFrameskip-v4", help = 'Environment name like PongNoFrameskip-v4')
+args = parser.parse_args()
 
-DirectoryPath = '/content/gdrive/MyDrive/testfolder/'
-DEFAULT_ENV_NAME = "PongNoFrameskip-v4" 
+DirectoryPath = args.Path 
+DEFAULT_ENV_NAME = args.env 
 device = torch.device("cuda")
 MEAN_REWARD_BOUND = 19.0           
 gamma = 0.99                   
