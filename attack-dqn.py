@@ -103,13 +103,16 @@ while True:
 print("Total reward: %.2f" % total_reward)
 print("Predicted DRL agent Actions: ", orig_actions)
 if attack:
+  average_state_P_time = sum(attack_times)/len(attack_times)
   successRate = successes/Totalsteps
   print("Adversarial Actions: ", adv_actions)
   print("Success rate: %.2f" % successRate)
-  print("Total Attack Execution Time: %s" % sum(attack_times))
-  print("Average One Perturbed state generation time: %s" % sum(attack_times)/len(attack_times))
+  print("Total Attack Execution Time: %.2f seconds" % sum(attack_times))
+  print("Average One Perturbed state generation time: %f seconds" % average_state_P_time)
   print("Attack Times List: %s" % attack_times)
-print("Overall Program Execution Time: %s seconds" % (time.time() - start_time_program))
+print("Overall Program Execution Time: %.2f seconds" % (time.time() - start_time_program))
+
+sys.exit()
 
 if record_folder:
         env.close()
