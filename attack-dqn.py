@@ -34,7 +34,7 @@ perturbationType = args.perturbationType
 stepsRFGSM = args.stepsRFGSM
 alphaRFGSM = args.alphaRFGSM
 epsRFGSM = args.epsRFGSM
-TotalGames = args.totalGames
+TotalGames = args.totalgames
 if args.attack == 1:
   attack = True
 else:
