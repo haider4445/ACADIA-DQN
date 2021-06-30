@@ -69,7 +69,7 @@ successes = 0
 attack_times = []
 adv_actions = []
 
-while Numberofgames == TotalGames:
+while Numberofgames != TotalGames:
 
     state = env.reset()
 
