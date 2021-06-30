@@ -115,7 +115,7 @@ while Numberofgames == TotalGames:
                 if delta > 0:
                     time.sleep(delta)
 
-average_reward = total_reward/Numberofgames
+average_reward = total_reward/TotalGames
 print("Average reward: %.2f" % average_reward)
 print("Predicted DRL agent Actions: ", orig_actions)
 if attack:
