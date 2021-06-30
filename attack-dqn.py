@@ -24,6 +24,7 @@ parser.add_argument('-a', '--attack', nargs="?", default=1, type = int, help = '
 parser.add_argument('--stepsRFGSM', nargs = "?", default = 1, type = int, help = "Number of steps of RFGSM attack")
 parser.add_argument('--alphaRFGSM', nargs = "?", default = 8/255, type = float, help = "Alpha (Step Size) of RFGSM attack")
 parser.add_argument('--epsRFGSM', nargs = "?", default = 16/255, type = float, help = "Epsilon (strength) of RFGSM attack")
+parser.add_argument('--totalgames', nargs = "?", default = 10, type = int, help = "total games/episodes")
 
 
 args = parser.parse_args()
@@ -33,6 +34,7 @@ perturbationType = args.perturbationType
 stepsRFGSM = args.stepsRFGSM
 alphaRFGSM = args.alphaRFGSM
 epsRFGSM = args.epsRFGSM
+TotalGames = args.TotalGames
 if args.attack == 1:
   attack = True
 else:
@@ -59,56 +61,62 @@ if record_folder:
 net = DQN(env.observation_space.shape, env.action_space.n)
 net.load_state_dict(torch.load(model, map_location=lambda storage, loc: storage))
 
-state = env.reset()
+Numberofgames = 0
 total_reward = 0.0
+orig_actions = []
 Totalsteps = 0
 successes = 0
-adv_actions = []
-orig_actions = []
 attack_times = []
+adv_actions = []
 
-while True:
-        #attack = True
-        start_ts = time.time()
-        if visualize:
-            env.render()
-        state_v = torch.tensor(np.array([state], copy=False))
-        q_vals = net(state_v).data.numpy()[0]
-        orig_action = np.argmax(q_vals)
-        orig_action_tensor = torch.tensor(np.array([orig_action], copy=False))
-        if attack:
-                start_attack = time.time()
-                if perturbationType == "optimal":
-                    rfgsmIns = RFGSM(model = net, steps = stepsRFGSM)
-                elif perturbationType == "rfgsm" or perturbationType == "RFGSM" or perturbationType == "Rfgsm":
-                    rfgsmIns = RFGSM(model = net, steps = stepsRFGSM, eps = epsRFGSM, alpha = alphaRFGSM)
-                elif perturbationType == "fgsm" or perturbationType == "FGSM":
-                    rfgsmIns = FGSM(model = net)
-                elif perturbationType == "cw" or perturbationType == "CW":
-                    rfgsmIns = CW(model = net)
-                adv_state = rfgsmIns.forward(state_v,orig_action_tensor)
-                attack_times.append(time.time() - start_attack)
-                q_vals = net(adv_state).data.numpy()[0]
-                adv_action = np.argmax(q_vals)
-                state, reward, done, _ = env.step(adv_action)
-                Totalsteps +=1
-                if adv_action != orig_action:
-                    orig_actions.append(orig_action)
-                    adv_actions.append(adv_action)
-                    successes +=1
-        else:
-            orig_actions.append(orig_action)
-            state, reward, done, _ = env.step(orig_action)
+while Numberofgames == TotalGames:
 
-        total_reward += reward
-        if done:
-            break
-        if visualize:
-            delta = 1/FPS - (time.time() - start_ts)
-            if delta > 0:
-                time.sleep(delta)
+    state = env.reset()
 
-print("Total reward: %.2f" % total_reward)
+    while True:
+            #attack = True
+            start_ts = time.time()
+            if visualize:
+                env.render()
+            state_v = torch.tensor(np.array([state], copy=False))
+            q_vals = net(state_v).data.numpy()[0]
+            orig_action = np.argmax(q_vals)
+            orig_action_tensor = torch.tensor(np.array([orig_action], copy=False))
+            if attack:
+                    start_attack = time.time()
+                    if perturbationType == "optimal":
+                        rfgsmIns = RFGSM(model = net, steps = stepsRFGSM)
+                    elif perturbationType == "rfgsm" or perturbationType == "RFGSM" or perturbationType == "Rfgsm":
+                        rfgsmIns = RFGSM(model = net, steps = stepsRFGSM, eps = epsRFGSM, alpha = alphaRFGSM)
+                    elif perturbationType == "fgsm" or perturbationType == "FGSM":
+                        rfgsmIns = FGSM(model = net)
+                    elif perturbationType == "cw" or perturbationType == "CW":
+                        rfgsmIns = CW(model = net)
+                    adv_state = rfgsmIns.forward(state_v,orig_action_tensor)
+                    attack_times.append(time.time() - start_attack)
+                    q_vals = net(adv_state).data.numpy()[0]
+                    adv_action = np.argmax(q_vals)
+                    state, reward, done, _ = env.step(adv_action)
+                    Totalsteps +=1
+                    if adv_action != orig_action:
+                        orig_actions.append(orig_action)
+                        adv_actions.append(adv_action)
+                        successes +=1
+            else:
+                orig_actions.append(orig_action)
+                state, reward, done, _ = env.step(orig_action)
+
+            total_reward += reward
+            if done:
+                Numberofgames += 1
+                break
+            if visualize:
+                delta = 1/FPS - (time.time() - start_ts)
+                if delta > 0:
+                    time.sleep(delta)
+
+average_reward = total_reward/Numberofgames
+print("Average reward: %.2f" % average_reward)
 print("Predicted DRL agent Actions: ", orig_actions)
 if attack:
   average_state_P_time = sum(attack_times)/len(attack_times)
