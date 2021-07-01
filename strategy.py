@@ -1,4 +1,4 @@
-from random import random
+import random
 
 class Strategy:
 
@@ -6,7 +6,7 @@ class Strategy:
 		self.Totalsteps = Totalsteps
 
 	def randomStrategy(self):
-		if random() % 2 == 0:
+		if randint(0,100) % 2 == 0:
 			return False
 		else:
 			return True
