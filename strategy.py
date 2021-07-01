@@ -10,4 +10,5 @@ class Strategy:
 			return False
 		else:
 			return True
-
+	def leastStepsStrategy(self):
+		pass

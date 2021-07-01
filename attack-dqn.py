@@ -27,7 +27,7 @@ parser.add_argument('--stepsRFGSM', nargs = "?", default = 1, type = int, help =
 parser.add_argument('--alphaRFGSM', nargs = "?", default = 8/255, type = float, help = "Alpha (Step Size) of RFGSM attack")
 parser.add_argument('--epsRFGSM', nargs = "?", default = 16/255, type = float, help = "Epsilon (strength) of RFGSM attack")
 parser.add_argument('--totalgames', nargs = "?", default = 10, type = int, help = "total games/episodes")
-parser.add_argument('--strategy', nargs = "?", default = 0, type = int, help = "Attack on as low number of steps as possible (1 for strategy or 0 for attack on all timesteps)")
+parser.add_argument('--strategy', nargs = "?", default = "allSteps", type = str, help = "Attack strategy: random, allSteps, leastSteps")
 
 
 args = parser.parse_args()
@@ -38,6 +38,7 @@ stepsRFGSM = args.stepsRFGSM
 alphaRFGSM = args.alphaRFGSM
 epsRFGSM = args.epsRFGSM
 TotalGames = args.totalgames
+strategy = args.strategy
 
 if args.attack == 1:
   attack = True
@@ -69,6 +70,7 @@ Numberofgames = 0
 total_reward = 0.0
 orig_actions = []
 Totalsteps = 0
+Allsteps = 0
 successes = 0
 attack_times = []
 adv_actions = []
@@ -79,10 +81,18 @@ while Numberofgames != TotalGames:
 
     while True:
             #attack = True
-            if strategy == 1:
+            if strategy == "random":
                 strat = Strategy(Totalsteps)
                 attack = strat.randomStrategy()
 
+            elif strategy == "leastSteps":
+                strat = Strategy(Totalsteps)
+                attack = strat.leastStepsStrategy()
+
+            elif strategy == "allSteps":
+                attack = True
+
+            Allsteps += 1
             start_ts = time.time()
             if visualize:
                 env.render()
@@ -129,11 +139,15 @@ print("Predicted DRL agent Actions: ", orig_actions)
 if attack:
   average_state_P_time = sum(attack_times)/len(attack_times)
   successRate = successes/Totalsteps
+  attackRate = Totalsteps/Allsteps
   print("Adversarial Actions: ", adv_actions)
   print("Success rate: %.2f" % successRate)
+  print("Total steps Attacked: %f" % Totalsteps)
+  print("Attack rate: %f" % attackRate)
   print("Total Attack Execution Time: %.2f seconds" % sum(attack_times))
   print("Average One Perturbed state generation time: %f seconds" % average_state_P_time)
   print("Attack Times List: %s" % attack_times)
+
 print("Overall Program Execution Time: %.2f seconds" % (time.time() - start_time_program))
 
 sys.exit()
