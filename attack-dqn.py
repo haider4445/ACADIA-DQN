@@ -13,6 +13,8 @@ import argparse
 import os
 import sys
 import time
+from strategy import Strategy
+
 start_time_program = time.time()
 
 
@@ -25,6 +27,7 @@ parser.add_argument('--stepsRFGSM', nargs = "?", default = 1, type = int, help =
 parser.add_argument('--alphaRFGSM', nargs = "?", default = 8/255, type = float, help = "Alpha (Step Size) of RFGSM attack")
 parser.add_argument('--epsRFGSM', nargs = "?", default = 16/255, type = float, help = "Epsilon (strength) of RFGSM attack")
 parser.add_argument('--totalgames', nargs = "?", default = 10, type = int, help = "total games/episodes")
+parser.add_argument('--strategy', nargs = "?", default = 0, type = int, help = "Attack on as low number of steps as possible (1 for strategy or 0 for attack on all timesteps)")
 
 
 args = parser.parse_args()
@@ -35,6 +38,7 @@ stepsRFGSM = args.stepsRFGSM
 alphaRFGSM = args.alphaRFGSM
 epsRFGSM = args.epsRFGSM
 TotalGames = args.totalgames
+
 if args.attack == 1:
   attack = True
 else:
@@ -75,6 +79,10 @@ while Numberofgames != TotalGames:
 
     while True:
             #attack = True
+            if strategy == 1:
+                strat = Strategy(Totalsteps)
+                attack = strat.randomStrategy()
+
             start_ts = time.time()
             if visualize:
                 env.render()
