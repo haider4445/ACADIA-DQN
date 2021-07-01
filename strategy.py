@@ -6,7 +6,7 @@ class Strategy:
 		self.Totalsteps = Totalsteps
 
 	def randomStrategy(self):
-		if randint(0,100) % 2 == 0:
+		if random.randint(0,100) % 2 == 0:
 			return False
 		else:
 			return True

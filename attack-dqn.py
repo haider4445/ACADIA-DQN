@@ -41,9 +41,9 @@ TotalGames = args.totalgames
 strategy = args.strategy
 
 if args.attack == 1:
-  attack = True
+  Doattack = True
 else:
-  attack = False
+  Doattack = False
 
 print(args)
 
@@ -136,7 +136,7 @@ while Numberofgames != TotalGames:
 average_reward = total_reward/TotalGames
 print("Average reward: %.2f" % average_reward)
 print("Predicted DRL agent Actions: ", orig_actions)
-if attack:
+if Doattack:
   average_state_P_time = sum(attack_times)/len(attack_times)
   successRate = successes/Totalsteps
   attackRate = Totalsteps/Allsteps
@@ -151,6 +151,3 @@ if attack:
 print("Overall Program Execution Time: %.2f seconds" % (time.time() - start_time_program))
 
 sys.exit()
-
-if record_folder:
-        env.close()
