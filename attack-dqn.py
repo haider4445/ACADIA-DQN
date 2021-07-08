@@ -92,7 +92,7 @@ while Numberofgames != TotalGames:
 			q_vals = net(state_v).data.numpy()[0]
 			orig_action = np.argmax(q_vals)
 			orig_action_tensor = torch.tensor(np.array([orig_action], copy=False))
-			if attack:
+			if Doattack:
 					if strategy == "random":
 						strat = Strategy(Totalsteps)
 						attack = strat.randomStrategy()
@@ -108,7 +108,7 @@ while Numberofgames != TotalGames:
 						strat = Strategy(Totalsteps)
 						M = 3
 						n = 3
-						domain = False
+						domain = True
 						dam = "pong"
 						acts_mask = []
 						repeat_adv_act = 1
@@ -118,12 +118,18 @@ while Numberofgames != TotalGames:
 						if attack:
 							for i in range(len(adv_acts)):
 								state, reward, done, _ = env.step(adv_acts[i])
+								Totalsteps +=1
+								if adv_acts[i] != orig_action:
+									orig_actions.append(orig_action)
+									adv_actions.append(adv_acts[i])
+									successes +=1
 								if done:
 									break
 							attack = False
 						else:
 							orig_actions.append(orig_action)
 							state, reward, done, _ = env.step(orig_action)
+							attack = False
 
 					if attack:
 						start_attack = time.time()

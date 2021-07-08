@@ -55,6 +55,7 @@ class Strategy:
 				std_dam = self.dam_pong(baselineState)
 		else:
 			std_dam = reward
+			print(reward)
 
 		#find attack state
 		for atk in atk_strategies:
@@ -67,29 +68,31 @@ class Strategy:
 					state_v = torch.tensor(np.array([state], copy=False))
 					q_vals = net(state_v).data.numpy()[0]
 					adv_action = np.argmax(q_vals)
-					adv_acts.append(orig_action)
+					adv_acts.append(adv_action)
 				state, reward, done, _ = env.step(adv_action)
+
 				if done:
 					break
 				i +=1
-		attackState = state
+			attackState = state
 
-		#find damage with attack
-		if domain == True:
-			if dam == "pong":
-				atk_dam = self.dam_pong(attackState)
-		else:
-			atk_dam = reward
+			#find damage with attack
+			if domain == True:
+				if dam == "pong":
+					atk_dam = self.dam_pong(attackState)
+			else:
+				print(reward)
+				atk_dam = reward
 
-		print("DAM Attack", atk_dam)
-		print("DAM without Attack", std_dam)
+			print("DAM Attack", atk_dam)
+			print("DAM without Attack", std_dam)
 
-		if abs(atk_dam - std_dam) > delta and atk_dam > best_dam:
-			attack = True
-			adv_acts = acts
-			if not full_Search:
-				return adv_acts, attack
-		
+			if abs(atk_dam - std_dam) > delta and atk_dam > std_dam:
+				attack = True
+				adv_acts = acts
+				if not full_Search:
+					return adv_acts, attack
+			
 		return adv_acts, attack
 
 	def dam_pong(self,obs):
