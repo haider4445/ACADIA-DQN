@@ -42,8 +42,10 @@ strategy = args.strategy
 
 if args.attack == 1:
   Doattack = True
+  attack = True
 else:
   Doattack = False
+  attack = False
 
 print(args)
 
@@ -62,7 +64,7 @@ visualize=True
 
 env = make_env(DEFAULT_ENV_NAME)
 if record_folder:
-        env = gym.wrappers.Monitor(env, record_folder, force=True)
+		env = gym.wrappers.Monitor(env, record_folder, force=True)
 net = DQN(env.observation_space.shape, env.action_space.n)
 net.load_state_dict(torch.load(model, map_location=lambda storage, loc: storage))
 
@@ -77,83 +79,84 @@ adv_actions = []
 
 while Numberofgames != TotalGames:
 
-    state = env.reset()
+	state = env.reset()
 
-    while True:
-            #attack = True
+	while True:
+			#attack = True
 
-            Allsteps += 1
-            start_ts = time.time()
-            if visualize:
-                env.render()
-            state_v = torch.tensor(np.array([state], copy=False))
-            q_vals = net(state_v).data.numpy()[0]
-            orig_action = np.argmax(q_vals)
-            orig_action_tensor = torch.tensor(np.array([orig_action], copy=False))
-            if attack:
-                    if strategy == "random":
-                        strat = Strategy(Totalsteps)
-                        attack = strat.randomStrategy()
+			Allsteps += 1
+			start_ts = time.time()
+			if visualize:
+				env.render()
+			state_v = torch.tensor(np.array([state], copy=False))
+			q_vals = net(state_v).data.numpy()[0]
+			orig_action = np.argmax(q_vals)
+			orig_action_tensor = torch.tensor(np.array([orig_action], copy=False))
+			if attack:
+					if strategy == "random":
+						strat = Strategy(Totalsteps)
+						attack = strat.randomStrategy()
 
-                    elif strategy == "leastSteps":
-                        strat = Strategy(Totalsteps)
-                        attack = strat.leastStepsStrategy()
+					elif strategy == "leastSteps":
+						strat = Strategy(Totalsteps)
+						attack = strat.leastStepsStrategy()
 
-                    elif strategy == "allSteps":
-                        attack = True
+					elif strategy == "allSteps":
+						attack = True
 
-                    elif strategy == "critical":
-                        strat = Strategy(Totalsteps)
-                        M = 3
-                        n = 3
-                        domain = True
-                        dam = "pong"
-                        acts_mask = []
-                        repeat_adv_act = 1
-                        fullSearch = False
-                        adv_acts, attack = strat.CriticalPointStrategy(M = M, n = n, net = net, state = state, env_orig = env, acts_mask = acts_mask, repeat_adv_act = repeat_adv_act, dam = dam, domain = domain, delta = delta, fullSearch = fullSearch)
-                        if attack:
-                            for i in range(len(adv_acts)):
-                                state, reward, done, _ = env.step(adv_acts[i])
-                                if done:
-                                    break
-                            attack = False
-                        else:
-                            orig_actions.append(orig_action)
-                            state, reward, done, _ = env.step(orig_action)
+					elif strategy == "critical":
+						strat = Strategy(Totalsteps)
+						M = 3
+						n = 3
+						domain = False
+						dam = "pong"
+						acts_mask = []
+						repeat_adv_act = 1
+						fullSearch = False
+						delta = 10
+						adv_acts, attack = strat.CriticalPointStrategy(M = M, n = n, net = net, state = state, env_orig = env, acts_mask = acts_mask, repeat_adv_act = repeat_adv_act, dam = dam, domain = domain, delta = delta, fullSearch = fullSearch)
+						if attack:
+							for i in range(len(adv_acts)):
+								state, reward, done, _ = env.step(adv_acts[i])
+								if done:
+									break
+							attack = False
+						else:
+							orig_actions.append(orig_action)
+							state, reward, done, _ = env.step(orig_action)
 
-                    if attack:
-                        start_attack = time.time()
-                        if perturbationType == "optimal":
-                            rfgsmIns = RFGSM(model = net, steps = stepsRFGSM)
-                        elif perturbationType == "rfgsm" or perturbationType == "RFGSM" or perturbationType == "Rfgsm":
-                            rfgsmIns = RFGSM(model = net, steps = stepsRFGSM, eps = epsRFGSM, alpha = alphaRFGSM)
-                        elif perturbationType == "fgsm" or perturbationType == "FGSM":
-                            rfgsmIns = FGSM(model = net)
-                        elif perturbationType == "cw" or perturbationType == "CW":
-                            rfgsmIns = CW(model = net)
-                        adv_state = rfgsmIns.forward(state_v,orig_action_tensor)
-                        attack_times.append(time.time() - start_attack)
-                        q_vals = net(adv_state).data.numpy()[0]
-                        adv_action = np.argmax(q_vals)
-                        state, reward, done, _ = env.step(adv_action)
-                        Totalsteps +=1
-                        if adv_action != orig_action:
-                            orig_actions.append(orig_action)
-                            adv_actions.append(adv_action)
-                            successes +=1
-            else:
-                orig_actions.append(orig_action)
-                state, reward, done, _ = env.step(orig_action)
+					if attack:
+						start_attack = time.time()
+						if perturbationType == "optimal":
+							rfgsmIns = RFGSM(model = net, steps = stepsRFGSM)
+						elif perturbationType == "rfgsm" or perturbationType == "RFGSM" or perturbationType == "Rfgsm":
+							rfgsmIns = RFGSM(model = net, steps = stepsRFGSM, eps = epsRFGSM, alpha = alphaRFGSM)
+						elif perturbationType == "fgsm" or perturbationType == "FGSM":
+							rfgsmIns = FGSM(model = net)
+						elif perturbationType == "cw" or perturbationType == "CW":
+							rfgsmIns = CW(model = net)
+						adv_state = rfgsmIns.forward(state_v,orig_action_tensor)
+						attack_times.append(time.time() - start_attack)
+						q_vals = net(adv_state).data.numpy()[0]
+						adv_action = np.argmax(q_vals)
+						state, reward, done, _ = env.step(adv_action)
+						Totalsteps +=1
+						if adv_action != orig_action:
+							orig_actions.append(orig_action)
+							adv_actions.append(adv_action)
+							successes +=1
+			else:
+				orig_actions.append(orig_action)
+				state, reward, done, _ = env.step(orig_action)
 
-            total_reward += reward
-            if done:
-                Numberofgames += 1
-                break
-            if visualize:
-                delta = 1/FPS - (time.time() - start_ts)
-                if delta > 0:
-                    time.sleep(delta)
+			total_reward += reward
+			if done:
+				Numberofgames += 1
+				break
+			if visualize:
+				delta = 1/FPS - (time.time() - start_ts)
+				if delta > 0:
+					time.sleep(delta)
 
 average_reward = total_reward/TotalGames
 print("Average reward: %.2f" % average_reward)
