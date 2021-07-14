@@ -36,7 +36,10 @@ class Strategy:
 			orig_action = np.argmax(q_vals)
 			adv_acts.append(orig_action)
 			state, reward, done, _ = env.step(orig_action)
+			print("Baseline Calculation reward: ", reward)
 		baselineState = state
+
+		print("Baseline state shape: ", baselineState.shape)
 
 		#find attack strategies
 		action_shape = env.action_space.shape or env.action_space.n
@@ -48,6 +51,10 @@ class Strategy:
 		atk_strategies = [p for p in itertools.product(actions, repeat=n // repeat_adv_act)]  # define attack strategies
 		atk_strategies = np.repeat(atk_strategies, repeat_adv_act, axis=-1)
 
+		print("Attack strategies: ", atk_strategies)
+		print("Attack strategies shape: ", atk_strategies.shape)
+
+
 		#find damage without attack
 		if domain == True:
 			if dam == "pong":
@@ -55,7 +62,6 @@ class Strategy:
 				std_dam = self.dam_pong(baselineState)
 		else:
 			std_dam = reward
-			print(reward)
 
 		#find attack state
 		for atk in atk_strategies:
@@ -70,6 +76,7 @@ class Strategy:
 					adv_action = np.argmax(q_vals)
 					adv_acts.append(adv_action)
 				state, reward, done, _ = env.step(adv_action)
+				print("Adversarial Calculation reward: ", reward)	
 
 				if done:
 					break
