@@ -24,9 +24,10 @@ class FGSM(Attack):
         >>> adv_images = attack(images, labels)
         
     """
-    def __init__(self, model, eps=0.007):
+    def __init__(self, model, targeted = -1, eps=0.007):
         super(FGSM, self).__init__("FGSM", model)
         self.eps = eps
+        self.targeted = targeted
 
     def forward(self, images, labels):
         r"""
@@ -40,7 +41,7 @@ class FGSM(Attack):
 
         images.requires_grad = True
         outputs = self.model(images)
-        cost = self._targeted*loss(outputs, labels)
+        cost = self.targeted*loss(outputs, labels)
 
         grad = torch.autograd.grad(cost, images,
                                    retain_graph=False, create_graph=False)[0]

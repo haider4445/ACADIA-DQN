@@ -14,7 +14,6 @@ import os
 import sys
 import time
 from strategy import Strategy
-from targetedCW import CarliniLi
 
 start_time_program = time.time()
 
@@ -145,12 +144,18 @@ while Numberofgames != TotalGames:
 							rfgsmIns = RFGSM(model = net, steps = stepsRFGSM)
 						elif perturbationType == "rfgsm" or perturbationType == "RFGSM" or perturbationType == "Rfgsm":
 							rfgsmIns = RFGSM(model = net, steps = stepsRFGSM, eps = epsRFGSM, alpha = alphaRFGSM)
+						elif perturbationType == "rfgsmt" or perturbationType == "RFGSMt" or perturbationType == "Rfgsmt":
+							rfgsmIns = RFGSM(model = net, targeted = 1, steps = stepsRFGSM, eps = epsRFGSM, alpha = alphaRFGSM)
 						elif perturbationType == "fgsm" or perturbationType == "FGSM":
 							rfgsmIns = FGSM(model = net)
+						elif perturbationType == "fgsmt" or perturbationType == "FGSMt":
+							rfgsmIns = FGSM(model = net, targeted = 1)
+							print(1)
 						elif perturbationType == "cw" or perturbationType == "CW":
 							rfgsmIns = CW(model = net)
 						elif perturbationType == "cwt" or perturbationType == "CWT":
-							rfgsmIns = CarliniLi(model = net)
+							rfgsmIns = CW(model = net, targeted = 1)
+
 						adv_state = rfgsmIns.forward(state_v,orig_action_tensor)
 						attack_times.append(time.time() - start_attack)
 						q_vals = net(adv_state).data.numpy()[0]

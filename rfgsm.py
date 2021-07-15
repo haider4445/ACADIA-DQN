@@ -25,11 +25,12 @@ class RFGSM(Attack):
         >>> attack = torchattacks.RFGSM(model, eps=16/255, alpha=8/255, steps=1)
         >>> adv_images = attack(images, labels)
     """
-    def __init__(self, model, eps=16/255, alpha=8/255, steps=1):
+    def __init__(self, model, targeted = -1, eps=16/255, alpha=8/255, steps=1):
         super(RFGSM, self).__init__("RFGSM", model)
         self.eps = eps
         self.alpha = alpha
         self.steps = steps
+        self.targeted = targeted
 
     def forward(self, images, labels):
         r"""
@@ -46,7 +47,7 @@ class RFGSM(Attack):
         for i in range(self.steps):
             adv_images.requires_grad = True
             outputs = self.model(adv_images)
-            cost = self._targeted*loss(outputs, labels)
+            cost = self.targeted*loss(outputs, labels)
 
             grad = torch.autograd.grad(cost, adv_images,
                                        retain_graph=False, create_graph=False)[0]

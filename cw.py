@@ -34,12 +34,13 @@ class CW(Attack):
 	.. note:: Binary search for c is NOT IMPLEMENTED methods in the paper due to time consuming.
 	
 	"""
-	def __init__(self, model, c=1e-4, kappa=0, steps=1000, lr=0.01):
+	def __init__(self, model, targeted = -1, c=1e-4, kappa=0, steps=1000, lr=0.01):
 		super(CW, self).__init__("CW", model)
 		self.c = c
 		self.kappa = kappa
 		self.steps = steps
 		self.lr = lr
+		self.targeted = targeted
 
 	def forward(self, images, labels):
 		r"""
@@ -115,4 +116,4 @@ class CW(Attack):
 		i, _ = torch.max((1-one_hot_labels)*outputs, dim=1)
 		j = torch.masked_select(outputs, one_hot_labels.bool())
 
-		return torch.clamp(self._targeted*(i-j), min=-self.kappa)
+		return torch.clamp(self.targeted*(i-j), min=-self.kappa)
