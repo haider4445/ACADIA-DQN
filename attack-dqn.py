@@ -139,6 +139,7 @@ while Numberofgames != TotalGames:
 							attack = False
 
 					if attack:
+
 						start_attack = time.time()
 						if perturbationType == "optimal":
 							rfgsmIns = RFGSM(model = net, steps = stepsRFGSM)
@@ -150,7 +151,6 @@ while Numberofgames != TotalGames:
 							rfgsmIns = FGSM(model = net)
 						elif perturbationType == "fgsmt" or perturbationType == "FGSMt":
 							rfgsmIns = FGSM(model = net, targeted = 1)
-							print(1)
 						elif perturbationType == "cw" or perturbationType == "CW":
 							rfgsmIns = CW(model = net)
 						elif perturbationType == "cwt" or perturbationType == "CWT":
@@ -162,11 +162,13 @@ while Numberofgames != TotalGames:
 						adv_action = np.argmax(q_vals)
 						state, reward, done, _ = env.step(adv_action)
 						Totalsteps +=1
+						Allsteps += 1
 						if adv_action != orig_action:
 							orig_actions.append(orig_action)
 							adv_actions.append(adv_action)
 							successes +=1
 			else:
+				Allsteps += 1
 				orig_actions.append(orig_action)
 				state, reward, done, _ = env.step(orig_action)
 
