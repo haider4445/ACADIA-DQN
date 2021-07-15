@@ -96,16 +96,23 @@ class Strategy:
 			#print("DAM Attack", atk_dam)
 			#print("DAM without Attack", std_dam)
 			difference = abs(atk_dam - std_dam)
+			print("Actions before delta: ",adv_acts)
+			print("its difference", difference)
 
 			if difference > delta:# and atk_dam > std_dam:
+				print("Actions so far: ",adv_acts)
+				print("its difference", difference)
+
 				attack = True
 				adv_acts = acts
 				if not fullSearch:
 					return adv_acts, attack
 				else:
-					if difference > bestdiff:
+					if difference >= bestdiff:
 						bestdiff = difference
 						best_acts = adv_acts
+						print("Best actions so far",best_acts)
+						print("its difference", difference)
 			
 		return best_acts, attack
 

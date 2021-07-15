@@ -14,6 +14,7 @@ import os
 import sys
 import time
 from strategy import Strategy
+from targetedCW import CarliniLi
 
 start_time_program = time.time()
 
@@ -148,6 +149,8 @@ while Numberofgames != TotalGames:
 							rfgsmIns = FGSM(model = net)
 						elif perturbationType == "cw" or perturbationType == "CW":
 							rfgsmIns = CW(model = net)
+						elif perturbationType == "cwt" or perturbationType == "CWT":
+							rfgsmIns = CarliniLi(model = net)
 						adv_state = rfgsmIns.forward(state_v,orig_action_tensor)
 						attack_times.append(time.time() - start_attack)
 						q_vals = net(adv_state).data.numpy()[0]
@@ -180,7 +183,7 @@ print("Predicted DRL agent Actions: ", orig_actions)
 if Doattack:
   #average_state_P_time = sum(attack_times)/len(attack_times)
   successRate = successes/Totalsteps
-  attackRate = Totalsteps/allSteps
+  attackRate = Totalsteps/Allsteps
   print("Adversarial Actions: ", adv_actions)
   print("Success rate: %.2f" % successRate)
   print("Total steps Attacked: %f" % Totalsteps)
