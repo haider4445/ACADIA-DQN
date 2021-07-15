@@ -22,6 +22,8 @@ class Strategy:
 
 		adv_acts = []
 		attack = False
+		bestdiff = -1
+		best_acts = []
 
 		#deep copy env
 		if isinstance(env_orig, gym.wrappers.Monitor):
@@ -36,10 +38,10 @@ class Strategy:
 			orig_action = np.argmax(q_vals)
 			adv_acts.append(orig_action)
 			state, reward, done, _ = env.step(orig_action)
-			print("Baseline Calculation reward: ", reward)
+			#print("Baseline Calculation reward: ", reward)
 		baselineState = state
 
-		print("Baseline state shape: ", baselineState.shape)
+		#print("Baseline state shape: ", baselineState.shape)
 
 		#find attack strategies
 		action_shape = env.action_space.shape or env.action_space.n
@@ -51,14 +53,14 @@ class Strategy:
 		atk_strategies = [p for p in itertools.product(actions, repeat=n // repeat_adv_act)]  # define attack strategies
 		atk_strategies = np.repeat(atk_strategies, repeat_adv_act, axis=-1)
 
-		print("Attack strategies: ", atk_strategies)
-		print("Attack strategies shape: ", atk_strategies.shape)
+		#print("Attack strategies: ", atk_strategies)
+		#print("Attack strategies shape: ", atk_strategies.shape)
 
 
 		#find damage without attack
 		if domain == True:
 			if dam == "pong":
-				print(baselineState)
+				#print(baselineState)
 				std_dam = self.dam_pong(baselineState)
 		else:
 			std_dam = reward
@@ -76,7 +78,7 @@ class Strategy:
 					adv_action = np.argmax(q_vals)
 					adv_acts.append(adv_action)
 				state, reward, done, _ = env.step(adv_action)
-				print("Adversarial Calculation reward: ", reward)	
+				#print("Adversarial Calculation reward: ", reward)	
 
 				if done:
 					break
@@ -88,19 +90,24 @@ class Strategy:
 				if dam == "pong":
 					atk_dam = self.dam_pong(attackState)
 			else:
-				print(reward)
+				#print(reward)
 				atk_dam = reward
 
-			print("DAM Attack", atk_dam)
-			print("DAM without Attack", std_dam)
+			#print("DAM Attack", atk_dam)
+			#print("DAM without Attack", std_dam)
+			difference = abs(atk_dam - std_dam)
 
-			if abs(atk_dam - std_dam) > delta and atk_dam > std_dam:
+			if difference > delta:# and atk_dam > std_dam:
 				attack = True
 				adv_acts = acts
-				if not full_Search:
+				if not fullSearch:
 					return adv_acts, attack
+				else:
+					if difference > bestdiff:
+						bestdiff = difference
+						best_acts = adv_acts
 			
-		return adv_acts, attack
+		return best_acts, attack
 
 	def dam_pong(self,obs):
 		"""

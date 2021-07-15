@@ -84,7 +84,7 @@ while Numberofgames != TotalGames:
 	while True:
 			#attack = True
 
-			Allsteps += 1
+			
 			start_ts = time.time()
 			if visualize:
 				env.render()
@@ -108,25 +108,32 @@ while Numberofgames != TotalGames:
 						strat = Strategy(Totalsteps)
 						M = 3
 						n = 3
-						domain = True
+						domain = False
 						dam = "pong"
 						acts_mask = []
 						repeat_adv_act = 1
 						fullSearch = False
-						delta = 10
+						delta = 0
 						adv_acts, attack = strat.CriticalPointStrategy(M = M, n = n, net = net, state = state, env_orig = env, acts_mask = acts_mask, repeat_adv_act = repeat_adv_act, dam = dam, domain = domain, delta = delta, fullSearch = fullSearch)
+						print("Adversarial Acts returned: " ,adv_acts)
+						print("Attack Bool: ", attack)
 						if attack:
 							for i in range(len(adv_acts)):
+								print("Attacking...")
 								state, reward, done, _ = env.step(adv_acts[i])
 								Totalsteps +=1
+								Allsteps += 1
 								if adv_acts[i] != orig_action:
 									orig_actions.append(orig_action)
 									adv_actions.append(adv_acts[i])
 									successes +=1
 								if done:
+									print("------done-------")
+									attack = False
 									break
 							attack = False
 						else:
+							Allsteps += 1
 							orig_actions.append(orig_action)
 							state, reward, done, _ = env.step(orig_action)
 							attack = False
@@ -156,7 +163,10 @@ while Numberofgames != TotalGames:
 				state, reward, done, _ = env.step(orig_action)
 
 			total_reward += reward
+			print(total_reward)
+			print("Done status: ", done)
 			if done:
+		
 				Numberofgames += 1
 				break
 			if visualize:
@@ -168,15 +178,15 @@ average_reward = total_reward/TotalGames
 print("Average reward: %.2f" % average_reward)
 print("Predicted DRL agent Actions: ", orig_actions)
 if Doattack:
-  average_state_P_time = sum(attack_times)/len(attack_times)
+  #average_state_P_time = sum(attack_times)/len(attack_times)
   successRate = successes/Totalsteps
-  attackRate = Totalsteps/Allsteps
+  attackRate = Totalsteps/allSteps
   print("Adversarial Actions: ", adv_actions)
   print("Success rate: %.2f" % successRate)
   print("Total steps Attacked: %f" % Totalsteps)
   print("Attack rate: %f" % attackRate)
   print("Total Attack Execution Time: %.2f seconds" % sum(attack_times))
-  print("Average One Perturbed state generation time: %f seconds" % average_state_P_time)
+  #print("Average One Perturbed state generation time: %f seconds" % average_state_P_time)
   print("Attack Times List: %s" % attack_times)
 
 print("Overall Program Execution Time: %.2f seconds" % (time.time() - start_time_program))
