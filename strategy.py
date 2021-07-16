@@ -95,6 +95,8 @@ class Strategy:
 
 			#print("DAM Attack", atk_dam)
 			#print("DAM without Attack", std_dam)
+
+
 			difference = abs(atk_dam - std_dam)
 			print("Actions before delta: ",adv_acts)
 			print("its difference", difference)
@@ -121,6 +123,7 @@ class Strategy:
 		:param obs: (84 x 84) numpy array
 		:return: int, pong observation dam value
 		"""
+		print(obs.shape)
 		obs = obs.astype(int)
 		ball_obs = obs[14:-7, 11:-11]
 		right_bar_obs = obs[14:-7, -11:]

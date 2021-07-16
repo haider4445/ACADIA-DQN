@@ -28,6 +28,7 @@ parser.add_argument('--alphaRFGSM', nargs = "?", default = 8/255, type = float, 
 parser.add_argument('--epsRFGSM', nargs = "?", default = 16/255, type = float, help = "Epsilon (strength) of RFGSM attack")
 parser.add_argument('--totalgames', nargs = "?", default = 10, type = int, help = "total games/episodes")
 parser.add_argument('--strategy', nargs = "?", default = "allSteps", type = str, help = "Attack strategy: random, allSteps, leastSteps, critical")
+parser.add_argument('--targeted', nargs = "?", default = 0, type = int, help = "0 or 1")
 
 
 args = parser.parse_args()
@@ -39,6 +40,7 @@ alphaRFGSM = args.alphaRFGSM
 epsRFGSM = args.epsRFGSM
 TotalGames = args.totalgames
 strategy = args.strategy
+targeted = args.targeted
 
 if args.attack == 1:
   Doattack = True
@@ -106,8 +108,8 @@ while Numberofgames != TotalGames:
 
 					elif strategy == "critical":
 						strat = Strategy(Totalsteps)
-						M = 3
-						n = 3
+						M = 2
+						n = 2
 						domain = False
 						dam = "pong"
 						acts_mask = []
@@ -117,56 +119,55 @@ while Numberofgames != TotalGames:
 						adv_acts, attack = strat.CriticalPointStrategy(M = M, n = n, net = net, state = state, env_orig = env, acts_mask = acts_mask, repeat_adv_act = repeat_adv_act, dam = dam, domain = domain, delta = delta, fullSearch = fullSearch)
 						print("Adversarial Acts returned: " ,adv_acts)
 						print("Attack Bool: ", attack)
-						if attack:
+
+					if attack:
+						start_attack = time.time()
+						if perturbationType == "optimal":
+							rfgsmIns = RFGSM(model = net, steps = stepsRFGSM)
+						elif perturbationType == "rfgsmt" or perturbationType == "RFGSMt" or perturbationType == "Rfgsmt":
+							rfgsmIns = RFGSM(model = net, targeted = targeted, steps = stepsRFGSM, eps = epsRFGSM, alpha = alphaRFGSM)
+						elif perturbationType == "fgsm" or perturbationType == "FGSM":
+							rfgsmIns = FGSM(model = net, targeted = targeted)
+						elif perturbationType == "cw" or perturbationType == "CW":
+							rfgsmIns = CW(model = net, targeted = targeted)
+
+						if strategy == "critical":
+
+							adv_state = rfgsmIns.forward(state_v,orig_action_tensor)
 							for i in range(len(adv_acts)):
 								print("Attacking...")
-								state, reward, done, _ = env.step(adv_acts[i])
+								adv_state = rfgsmIns.forward(state_v,adv_acts[i])
+								attack_times.append(time.time() - start_attack)
+								q_vals = net(adv_state).data.numpy()[0]
+								adv_action = np.argmax(q_vals)
+								state, reward, done, _ = env.step(adv_action)
 								Totalsteps +=1
 								Allsteps += 1
-								if adv_acts[i] != orig_action:
+								if adv_action != orig_action:
 									orig_actions.append(orig_action)
-									adv_actions.append(adv_acts[i])
+									adv_actions.append(adv_action)
 									successes +=1
 								if done:
 									print("------done-------")
 									attack = False
 									break
-							attack = False
-						else:
+								state_v = torch.tensor(np.array([state], copy=False))
+								q_vals = net(state_v).data.numpy()[0]
+								orig_action = np.argmax(q_vals)
+								orig_action_tensor = torch.tensor(np.array([orig_action], copy=False))
+						
+						else: 
+							adv_state = rfgsmIns.forward(state_v,orig_action_tensor)						
+							attack_times.append(time.time() - start_attack)
+							q_vals = net(adv_state).data.numpy()[0]
+							adv_action = np.argmax(q_vals)
+							state, reward, done, _ = env.step(adv_action)
+							Totalsteps +=1
 							Allsteps += 1
-							orig_actions.append(orig_action)
-							state, reward, done, _ = env.step(orig_action)
-							attack = False
-
-					if attack:
-
-						start_attack = time.time()
-						if perturbationType == "optimal":
-							rfgsmIns = RFGSM(model = net, steps = stepsRFGSM)
-						elif perturbationType == "rfgsm" or perturbationType == "RFGSM" or perturbationType == "Rfgsm":
-							rfgsmIns = RFGSM(model = net, steps = stepsRFGSM, eps = epsRFGSM, alpha = alphaRFGSM)
-						elif perturbationType == "rfgsmt" or perturbationType == "RFGSMt" or perturbationType == "Rfgsmt":
-							rfgsmIns = RFGSM(model = net, targeted = 1, steps = stepsRFGSM, eps = epsRFGSM, alpha = alphaRFGSM)
-						elif perturbationType == "fgsm" or perturbationType == "FGSM":
-							rfgsmIns = FGSM(model = net)
-						elif perturbationType == "fgsmt" or perturbationType == "FGSMt":
-							rfgsmIns = FGSM(model = net, targeted = 1)
-						elif perturbationType == "cw" or perturbationType == "CW":
-							rfgsmIns = CW(model = net)
-						elif perturbationType == "cwt" or perturbationType == "CWT":
-							rfgsmIns = CW(model = net, targeted = 1)
-
-						adv_state = rfgsmIns.forward(state_v,orig_action_tensor)
-						attack_times.append(time.time() - start_attack)
-						q_vals = net(adv_state).data.numpy()[0]
-						adv_action = np.argmax(q_vals)
-						state, reward, done, _ = env.step(adv_action)
-						Totalsteps +=1
-						Allsteps += 1
-						if adv_action != orig_action:
-							orig_actions.append(orig_action)
-							adv_actions.append(adv_action)
-							successes +=1
+							if adv_action != orig_action:
+								orig_actions.append(orig_action)
+								adv_actions.append(adv_action)
+								successes +=1
 			else:
 				Allsteps += 1
 				orig_actions.append(orig_action)
