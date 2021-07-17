@@ -17,9 +17,7 @@ from strategy import Strategy
 from parser import parser
 
 start_time_program = time.time()
-
-
-args = parser.parse_args()
+args = parser().parse_args()
 model = args.Path
 DEFAULT_ENV_NAME = args.env #"PongNoFrameskip-v4"
 perturbationType = args.perturbationType
@@ -42,15 +40,9 @@ print(args)
 FPS = 25
 _display = pyvirtualdisplay.Display(visible=False, size=(1400, 900))
 _ = _display.start()
-
-
-# Taken (partially) from 
-# https://github.com/PacktPublishing/Deep-Reinforcement-Learning-Hands-On/blob/master/Chapter06/03_dqn_play.py
-#DirectoryPath = '/content/gdrive/MyDrive/testfolder/'
-#model= DirectoryPath + 'PongNoFrameskip-v4-best.dat'
-
 record_folder="video"  
 visualize=True
+
 
 env = make_env(DEFAULT_ENV_NAME)
 if record_folder:
@@ -74,7 +66,6 @@ while Numberofgames != TotalGames:
 	while True:
 			#attack = True
 
-			
 			start_ts = time.time()
 			if visualize:
 				env.render()
@@ -120,12 +111,11 @@ while Numberofgames != TotalGames:
 							rfgsmIns = CW(model = net, targeted = targeted)
 
 						if strategy == "critical":
-
-							rfgsmIns = CW(model = net, targeted = targeted)
 							adv_state = rfgsmIns.forward(state_v,orig_action_tensor)
 							for i in range(len(adv_acts)):
 								print("Attacking...")
-								adv_state = rfgsmIns.forward(state_v,adv_acts[i])
+								adv_act = torch.tensor(np.array(adv_acts[i], copy=False))
+								adv_state = rfgsmIns.forward(state_v,adv_act)
 								attack_times.append(time.time() - start_attack)
 								q_vals = net(adv_state).data.numpy()[0]
 								adv_action = np.argmax(q_vals)
