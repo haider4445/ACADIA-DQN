@@ -114,6 +114,7 @@ while Numberofgames != TotalGames:
 							adv_state = rfgsmIns.forward(state_v,orig_action_tensor)
 							for i in range(len(adv_acts)):
 								print("Attacking...")
+								print(adv_acts[i])
 								adv_act = torch.tensor(np.array(adv_acts[i], copy=False))
 								adv_state = rfgsmIns.forward(state_v,adv_act)
 								attack_times.append(time.time() - start_attack)
