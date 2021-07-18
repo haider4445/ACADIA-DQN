@@ -103,7 +103,7 @@ while Numberofgames != TotalGames:
 						start_attack = time.time()
 						if perturbationType == "optimal":
 							rfgsmIns = RFGSM(model = net, steps = stepsRFGSM)
-						elif perturbationType == "rfgsmt" or perturbationType == "RFGSMt" or perturbationType == "Rfgsmt":
+						elif perturbationType == "rfgsm" or perturbationType == "RFGSM" or perturbationType == "Rfgsmt":
 							rfgsmIns = RFGSM(model = net, targeted = targeted, steps = stepsRFGSM, eps = epsRFGSM, alpha = alphaRFGSM)
 						elif perturbationType == "fgsm" or perturbationType == "FGSM":
 							rfgsmIns = FGSM(model = net, targeted = targeted)
@@ -111,11 +111,10 @@ while Numberofgames != TotalGames:
 							rfgsmIns = CW(model = net, targeted = targeted)
 
 						if strategy == "critical":
-							for i in range(len(adv_acts))
+							for i in range(len(adv_acts)):
 								print("Attacking...")
-								print(adv_acts[i])
-								print(targeted)
-								adv_act = torch.tensor(np.array(adv_acts[i], copy=False))
+								adv_act = torch.tensor(np.array([adv_acts[i].item()], copy=False))
+								print(adv_act.shape)
 								adv_state = rfgsmIns.forward(state_v,adv_act)
 								attack_times.append(time.time() - start_attack)
 								q_vals = net(adv_state).data.numpy()[0]
