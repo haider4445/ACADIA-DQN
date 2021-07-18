@@ -11,6 +11,6 @@ def parser():
 	parser.add_argument('--epsRFGSM', nargs = "?", default = 16/255, type = float, help = "Epsilon (strength) of RFGSM attack")
 	parser.add_argument('--totalgames', nargs = "?", default = 10, type = int, help = "total games/episodes")
 	parser.add_argument('--strategy', nargs = "?", default = "allSteps", type = str, help = "Attack strategy: random, allSteps, leastSteps, critical")
-	parser.add_argument('--targeted', nargs = "?", default = 0, type = int, help = "0 or 1")
+	parser.add_argument('--targeted', nargs = "?", default = -1, type = int, help = "-1 or 1")
 
 	return parser
