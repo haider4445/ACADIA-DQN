@@ -89,7 +89,7 @@ while Numberofgames != TotalGames:
 						strat = Strategy(Totalsteps)
 						M = 2
 						n = 2
-						domain = False
+						domain = True
 						dam = "pong"
 						acts_mask = []
 						repeat_adv_act = 1
@@ -147,13 +147,18 @@ while Numberofgames != TotalGames:
 								orig_actions.append(orig_action)
 								adv_actions.append(adv_action)
 								successes +=1
+					else:
+						Allsteps += 1
+						orig_actions.append(orig_action)
+						state, reward, done, _ = env.step(orig_action)
+
 			else:
 				Allsteps += 1
 				orig_actions.append(orig_action)
 				state, reward, done, _ = env.step(orig_action)
 
 			total_reward += reward
-			print(total_reward)
+			print("Reward so far: ", total_reward)
 			print("Done status: ", done)
 			if done:
 		
@@ -168,7 +173,7 @@ average_reward = total_reward/TotalGames
 print("Average reward: %.2f" % average_reward)
 print("Predicted DRL agent Actions: ", orig_actions)
 if Doattack:
-  #average_state_P_time = sum(attack_times)/len(attack_times)
+  average_state_P_time = sum(attack_times)/len(attack_times)
   successRate = successes/Totalsteps
   attackRate = Totalsteps/Allsteps
   print("Adversarial Actions: ", adv_actions)
@@ -176,7 +181,7 @@ if Doattack:
   print("Total steps Attacked: %f" % Totalsteps)
   print("Attack rate: %f" % attackRate)
   print("Total Attack Execution Time: %.2f seconds" % sum(attack_times))
-  #print("Average One Perturbed state generation time: %f seconds" % average_state_P_time)
+  print("Average One Perturbed state generation time: %f seconds" % average_state_P_time)
   print("Attack Times List: %s" % attack_times)
 
 print("Overall Program Execution Time: %.2f seconds" % (time.time() - start_time_program))

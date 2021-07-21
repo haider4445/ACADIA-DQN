@@ -61,7 +61,7 @@ class Strategy:
 		if domain == True:
 			if dam == "pong":
 				#print(baselineState)
-				std_dam = self.dam_pong(baselineState)
+				std_dam = self.dam_pong(baselineState[0])
 		else:
 			std_dam = reward
 
@@ -88,7 +88,7 @@ class Strategy:
 			#find damage with attack
 			if domain == True:
 				if dam == "pong":
-					atk_dam = self.dam_pong(attackState)
+					atk_dam = self.dam_pong(attackState[0])
 			else:
 				#print(reward)
 				atk_dam = reward
