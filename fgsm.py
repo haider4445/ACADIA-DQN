@@ -20,7 +20,7 @@ class FGSM(Attack):
         >>> attack = torchattacks.FGSM(model, eps=0.007)
         >>> adv_images = attack(images, labels)
     """
-    def __init__(self,targeted = -1, model, eps=0.007):
+    def __init__(self, model, targeted = -1, eps=0.007):
         super().__init__("FGSM", model)
         self.eps = eps
         self._supported_mode = ['default', 'targeted']
