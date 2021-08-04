@@ -75,7 +75,7 @@ class Square(Attack):
         logits[u, y] = -float('inf')
         y_others = logits.max(dim=-1)[0]
 
-        if not self._targeted:
+        if not self.targeted:
             if self.loss == 'ce':
                 return y_corr - y_others, -1. * xent
             elif self.loss == 'margin':
@@ -387,7 +387,7 @@ class Square(Attack):
 
         adv = x.clone()
         if y is None:
-            if not self._targeted:
+            if not self.targeted:
                 with torch.no_grad():
                     output = self.model(x)
                     y_pred = output.max(1)[1]
@@ -396,12 +396,12 @@ class Square(Attack):
                 with torch.no_grad():
                     y = self._get_target_label(x, None)
         else:
-            if not self._targeted:
+            if not self.targeted:
                 y = y.detach().clone().long().to(self.device)
             else:
                 y = self._get_target_label(x, y)
 
-        if not self._targeted:
+        if not self.targeted:
             acc = self.model(x).max(1)[1] == y
         else:
             acc = self.model(x).max(1)[1] != y
@@ -422,7 +422,7 @@ class Square(Attack):
                 _, adv_curr = self.attack_single_run(x_to_fool, y_to_fool)
 
                 output_curr = self.model(adv_curr)
-                if not self._targeted:
+                if not self.targeted:
                     acc_curr = output_curr.max(1)[1] == y_to_fool
                 else:
                     acc_curr = output_curr.max(1)[1] != y_to_fool
