@@ -21,11 +21,12 @@ class DeepFool(Attack):
         >>> attack = torchattacks.DeepFool(model, steps=50, overshoot=0.02)
         >>> adv_images = attack(images, labels)
     """
-    def __init__(self, model, steps=50, overshoot=0.02):
+    def __init__(self, model, targeted = -1, steps=50, overshoot=0.02):
         super().__init__("DeepFool", model)
         self.steps = steps
         self.overshoot = overshoot
         self._supported_mode = ['default']
+        self.targeted = targeted
 
     def forward(self, images, labels, return_target_labels=False):
         r"""

@@ -34,7 +34,7 @@ class TIFGSM(Attack):
         >>> adv_images = attack(images, labels)
     """
 
-    def __init__(self, model, kernel_name='gaussian', len_kernel=15, nsig=3, eps=8/255, alpha=2/255, steps=20, decay=0.0, resize_rate=0.9, diversity_prob=0.5, random_start=False):
+    def __init__(self, model, targeted = -1, kernel_name='gaussian', len_kernel=15, nsig=3, eps=8/255, alpha=2/255, steps=20, decay=0.0, resize_rate=0.9, diversity_prob=0.5, random_start=False):
         super().__init__("TIFGSM", model)
         self.eps = eps
         self.steps = steps
@@ -48,6 +48,7 @@ class TIFGSM(Attack):
         self.nsig = nsig
         self.stacked_kernel = torch.from_numpy(self.kernel_generation())
         self._supported_mode = ['default', 'targeted']
+        self.targeted = targeted
 
     def input_diversity(self, x):
         img_size = x.shape[-1]

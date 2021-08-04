@@ -128,15 +128,14 @@ while Numberofgames != TotalGames:
 							rfgsmIns = FFGSM(model = net, targeted = targeted)
 						elif perturbationType == "mifgsm" or perturbationType == "MIFGSM":
 							rfgsmIns = MIFGSM(model = net, targeted = targeted)
-						elif perturbationType == "ffgsm" or perturbationType == "FFGSM":
+						elif perturbationType == "pgd" or perturbationType == "PGD":
 							rfgsmIns = PGD(model = net, targeted = targeted)
 						elif perturbationType == "gn" or perturbationType == "GN":
 							rfgsmIns = GN(model = net, targeted = targeted)
 						elif perturbationType == "gn" or perturbationType == "GN":
 							rfgsmIns = TIFGSM(model = net, targeted = targeted)
 						elif perturbationType == "gn" or perturbationType == "GN":
-							rfgsmIns = GN(model = net, targeted = targeted)
-						
+							rfgsmIns = GN(model = net)
 							
 
 						if strategy == "critical":

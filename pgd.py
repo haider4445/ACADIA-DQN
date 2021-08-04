@@ -23,7 +23,7 @@ class PGD(Attack):
         >>> attack = torchattacks.PGD(model, eps=8/255, alpha=1/255, steps=40, random_start=True)
         >>> adv_images = attack(images, labels)
     """
-    def __init__(self, model, eps=0.3,
+    def __init__(self, model, targeted = -1, eps=0.3,
                  alpha=2/255, steps=40, random_start=True):
         super().__init__("PGD", model)
         self.eps = eps
@@ -31,6 +31,7 @@ class PGD(Attack):
         self.steps = steps
         self.random_start = random_start
         self._supported_mode = ['default', 'targeted']
+        self.targeted = targeted
 
     def forward(self, images, labels):
         r"""

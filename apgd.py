@@ -33,7 +33,7 @@ class APGD(Attack):
         >>> attack = torchattacks.APGD(model, norm='Linf', eps=8/255, steps=100, n_restarts=1, seed=0, loss='ce', eot_iter=1, rho=.75, verbose=False)
         >>> adv_images = attack(images, labels)
     """
-    def __init__(self, model, norm='Linf', eps=8/255, steps=100, n_restarts=1, 
+    def __init__(self, model, targeted = -1, norm='Linf', eps=8/255, steps=100, n_restarts=1, 
                  seed=0, loss='ce', eot_iter=1, rho=.75, verbose=False):
         super().__init__("APGD", model)
         self.eps = eps
@@ -46,6 +46,7 @@ class APGD(Attack):
         self.thr_decr = rho
         self.verbose = verbose
         self._supported_mode = ['default']
+        self.targeted = targeted
 
     def forward(self, images, labels):
         r"""

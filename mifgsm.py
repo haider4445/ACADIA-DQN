@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from ..attack import Attack
+from Attack import Attack
 
 
 class MIFGSM(Attack):
@@ -24,13 +24,14 @@ class MIFGSM(Attack):
         >>> adv_images = attack(images, labels)
     """
 
-    def __init__(self, model, eps=8/255, alpha=2/255, steps=5, decay=1.0):
+    def __init__(self, model, targeted = -1, eps=8/255, alpha=2/255, steps=5, decay=1.0):
         super().__init__("MIFGSM", model)
         self.eps = eps
         self.steps = steps
         self.decay = decay
         self.alpha = alpha
         self._supported_mode = ['default', 'targeted']
+        self.targeted = targeted
 
     def forward(self, images, labels):
         r"""
