@@ -9,6 +9,15 @@ from wrappers import make_env
 from rfgsm import RFGSM
 from fgsm import FGSM
 from cw import CW
+from deepfool import DeepFool
+from apgdt import APGDT
+from apgd import APGD
+from difgsm import DIFGSM 
+from ffgsm import FFGSM 
+from mifgsm import MIFGSM
+from pgd import PGD
+from gn import GN
+from tifgsm import TIFGSM
 import argparse
 import os
 import sys
@@ -109,6 +118,26 @@ while Numberofgames != TotalGames:
 							rfgsmIns = FGSM(model = net, targeted = targeted)
 						elif perturbationType == "cw" or perturbationType == "CW":
 							rfgsmIns = CW(model = net, targeted = targeted)
+						elif perturbationType == "apgd" or perturbationType == "APGD":
+							rfgsmIns = APGD(model = net, targeted = targeted)
+						elif perturbationType == "apgdt" or perturbationType == "APGDT":
+							rfgsmIns = APGDT(model = net, targeted = targeted)
+						elif perturbationType == "difgsm" or perturbationType == "DIFGSM":
+							rfgsmIns = DIFGSM(model = net, targeted = targeted)
+						elif perturbationType == "ffgsm" or perturbationType == "FFGSM":
+							rfgsmIns = FFGSM(model = net, targeted = targeted)
+						elif perturbationType == "mifgsm" or perturbationType == "MIFGSM":
+							rfgsmIns = MIFGSM(model = net, targeted = targeted)
+						elif perturbationType == "ffgsm" or perturbationType == "FFGSM":
+							rfgsmIns = PGD(model = net, targeted = targeted)
+						elif perturbationType == "gn" or perturbationType == "GN":
+							rfgsmIns = GN(model = net, targeted = targeted)
+						elif perturbationType == "gn" or perturbationType == "GN":
+							rfgsmIns = TIFGSM(model = net, targeted = targeted)
+						elif perturbationType == "gn" or perturbationType == "GN":
+							rfgsmIns = GN(model = net, targeted = targeted)
+						
+							
 
 						if strategy == "critical":
 							for i in range(len(adv_acts)):
