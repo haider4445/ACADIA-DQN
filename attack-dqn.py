@@ -132,7 +132,7 @@ while Numberofgames != TotalGames:
 							rfgsmIns = PGD(model = net, targeted = targeted)
 						elif perturbationType == "gn" or perturbationType == "GN":
 							rfgsmIns = GN(model = net, targeted = targeted)
-						elif perturbationType == "gn" or perturbationType == "GN":
+						elif perturbationType == "tifgsm" or perturbationType == "TIFGSM":
 							rfgsmIns = TIFGSM(model = net, targeted = targeted)
 						elif perturbationType == "gn" or perturbationType == "GN":
 							rfgsmIns = GN(model = net)
