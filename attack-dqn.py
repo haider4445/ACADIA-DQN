@@ -143,7 +143,6 @@ while Numberofgames != TotalGames:
 								print("Attacking...")
 								adv_act = torch.tensor(np.array([adv_acts[i].item()], copy=False))
 								print(adv_act.shape)
-								rfgsmIns.set_mode_targeted_by_function(target_map_function=lambda images, labels:labels)
 								adv_state = rfgsmIns.forward(state_v,adv_act)
 								attack_times.append(time.time() - start_attack)
 								q_vals = net(adv_state).data.numpy()[0]
@@ -165,6 +164,7 @@ while Numberofgames != TotalGames:
 								orig_action_tensor = torch.tensor(np.array([orig_action], copy=False))
 						
 						else: 
+							rfgsmIns.set_mode_targeted_by_function(target_map_function=lambda images, labels:labels)
 							adv_state = rfgsmIns.forward(state_v,orig_action_tensor)						
 							attack_times.append(time.time() - start_attack)
 							q_vals = net(adv_state).data.numpy()[0]
