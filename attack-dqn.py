@@ -25,6 +25,7 @@ import time
 from strategy import Strategy
 from parser import parser
 from defendedDQN import CnnDQN
+from defendedEnv import AtariRescale
 
 start_time_program = time.time()
 args = parser().parse_args()
@@ -59,11 +60,14 @@ env = make_env(DEFAULT_ENV_NAME)
 if record_folder:
 		env = gym.wrappers.Monitor(env, record_folder, force=True)
 if defended == 1:
+	env_conf = {"crop1": 34, "crop2": 34, "dimension2": 80}
+	env = AtariRescale(env, env_conf)
 	net = CnnDQN(env.observation_space.shape[0], env.action_space)
+	#net.load_state_dict(torch.load(model, map_location=lambda storage, loc: storage))
+	net.load_state_dict(torch.load(model, map_location= torch.device('cpu')))
 else:
 	net = DQN(env.observation_space.shape, env.action_space.n)
-
-net.load_state_dict(torch.load(model, map_location=lambda storage, loc: storage))
+	net.load_state_dict(torch.load(model, map_location=lambda storage, loc: storage))
 
 Numberofgames = 0
 total_reward = 0.0
