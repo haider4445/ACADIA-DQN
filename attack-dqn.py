@@ -98,7 +98,6 @@ while Numberofgames != TotalGames:
 				env.render()
 			state_v = torch.tensor(np.array([state], copy=False))
 			q_vals = net(state_v).data.numpy()[0]
-			print(state_v.shape)
 			orig_action = np.argmax(q_vals)
 			orig_action_tensor = torch.tensor(np.array([orig_action], copy=False))
 			if Doattack:
@@ -208,8 +207,7 @@ while Numberofgames != TotalGames:
 
 			total_reward += reward
 			total_rewardPerEpisode += reward
-			print("Reward so far: ", total_reward)
-			print("Done status: ", done)
+			print("Episode Number: ", Numberofgames+1, "/", TotalGames, "	Reward so far Per Episode: ", total_rewardPerEpisode, "	Done status: ", done)
 			if done:
 				Total_rewards.append(total_rewardPerEpisode)
 				total_rewardPerEpisode = 0
@@ -226,6 +224,7 @@ average_reward = np.mean(Total_rewards, axis = 0)
 std_average_reward = np.std(Total_rewards, axis = 0)
 print("Average reward: %.2f" % average_reward)
 print("Standard deviation of Rewards: %.2f" % std_average_reward)
+print("All Rewards Distribution: %s" % Total_rewards)
 print("Predicted DRL agent Actions: ", orig_actions)
 if Doattack:
 	attack_times = np.array(attack_times)
@@ -245,4 +244,7 @@ if Doattack:
 
 print("Overall Program Execution Time: %.2f seconds" % (time.time() - start_time_program))
 
-sys.exit()
+sys.exit(0)
+import os
+os._exit(0)
+raise SystemExit
