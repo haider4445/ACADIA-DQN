@@ -83,6 +83,8 @@ Allsteps = 0
 successes = 0
 attack_times = []
 adv_actions = []
+Total_rewards = []
+total_rewardPerEpisode = 0
 
 while Numberofgames != TotalGames:
 
@@ -205,10 +207,12 @@ while Numberofgames != TotalGames:
 				state, reward, done, _ = env.step(orig_action)
 
 			total_reward += reward
+			total_rewardPerEpisode += reward
 			print("Reward so far: ", total_reward)
 			print("Done status: ", done)
 			if done:
-		
+				Total_rewards.append(total_rewardPerEpisode)
+				total_rewardPerEpisode = 0
 				Numberofgames += 1
 				break
 			if visualize:
@@ -217,18 +221,26 @@ while Numberofgames != TotalGames:
 					time.sleep(delta)
 
 average_reward = total_reward/TotalGames
+Total_rewards = np.array(Total_rewards)
+average_reward = np.mean(Total_rewards, axis = 0)
+std_average_reward = np.std(Total_rewards, axis = 0)
 print("Average reward: %.2f" % average_reward)
+print("Standard deviation of Rewards: %.2f" % std_average_reward)
 print("Predicted DRL agent Actions: ", orig_actions)
 if Doattack:
+	attack_times = np.array(attack_times)
 	average_state_P_time = sum(attack_times)/len(attack_times)
+	average_state_P_time = np.mean(attack_times, axis = 0)
+	average_state_P_time_std = np.std(attack_times, axis = 0)
 	successRate = successes/Totalsteps
 	attackRate = Totalsteps/Allsteps
 	print("Adversarial Actions: ", adv_actions)
 	print("Success rate: %.2f" % successRate)
 	print("Total steps Attacked: %f" % Totalsteps)
 	print("Attack rate: %f" % attackRate)
-	print("Total Attack Execution Time: %.2f seconds" % sum(attack_times))
+	print("Total Attack Execution Time: %.2f seconds" % np.sum(attack_times))
 	print("Average One Perturbed state generation time: %f seconds" % average_state_P_time)
+	print("STD One Perturbed state generation time: %f seconds" % average_state_P_time_std)
 	print("Attack Times List: %s" % attack_times)
 
 print("Overall Program Execution Time: %.2f seconds" % (time.time() - start_time_program))
