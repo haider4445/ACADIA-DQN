@@ -24,6 +24,7 @@ import sys
 import time
 from strategy import Strategy
 from parser import parser
+from defendedDQN import CnnDQN
 
 start_time_program = time.time()
 args = parser().parse_args()
@@ -36,6 +37,7 @@ epsRFGSM = args.epsRFGSM
 TotalGames = args.totalgames
 strategy = args.strategy
 targeted = args.targeted
+defended = args.defended
 
 if args.attack == 1:
   Doattack = True
@@ -56,7 +58,11 @@ visualize=True
 env = make_env(DEFAULT_ENV_NAME)
 if record_folder:
 		env = gym.wrappers.Monitor(env, record_folder, force=True)
-net = DQN(env.observation_space.shape, env.action_space.n)
+if defended == 1:
+	net = CnnDQN(env.observation_space.shape[0], env.action_space)
+else:
+	net = DQN(env.observation_space.shape, env.action_space.n)
+
 net.load_state_dict(torch.load(model, map_location=lambda storage, loc: storage))
 
 Numberofgames = 0
