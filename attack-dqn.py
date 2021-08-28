@@ -25,7 +25,8 @@ import time
 from strategy import Strategy
 from parser import parser
 from defendedDQN import CnnDQN
-from defendedEnv import AtariRescale
+from defendedEnv import atari_env
+from utils import read_config
 
 start_time_program = time.time()
 args = parser().parse_args()
@@ -60,8 +61,12 @@ env = make_env(DEFAULT_ENV_NAME)
 if record_folder:
 		env = gym.wrappers.Monitor(env, record_folder, force=True)
 if defended == 1:
-	env_conf = {"crop1": 34, "crop2": 34, "dimension2": 80}
-	env = AtariRescale(env, env_conf)
+  setup_json = read_config(args.env_config)
+  env_conf = setup_json["Default"]
+  for i in setup_json.keys():
+          if i in args.env:
+              env_conf = setup_json[i]
+  env = atari_env(args.env, env_conf, args)
 	net = CnnDQN(env.observation_space.shape[0], env.action_space)
 	#net.load_state_dict(torch.load(model, map_location=lambda storage, loc: storage))
 	net.load_state_dict(torch.load(model, map_location= torch.device('cpu')))
@@ -69,6 +74,7 @@ else:
 	net = DQN(env.observation_space.shape, env.action_space.n)
 	net.load_state_dict(torch.load(model, map_location=lambda storage, loc: storage))
 
+print("Done Loading Model")
 Numberofgames = 0
 total_reward = 0.0
 orig_actions = []
@@ -89,7 +95,9 @@ while Numberofgames != TotalGames:
 			if visualize:
 				env.render()
 			state_v = torch.tensor(np.array([state], copy=False))
+			print(state_v.shape)
 			q_vals = net(state_v).data.numpy()[0]
+			print(state_v.shape)
 			orig_action = np.argmax(q_vals)
 			orig_action_tensor = torch.tensor(np.array([orig_action], copy=False))
 			if Doattack:
@@ -173,8 +181,9 @@ while Numberofgames != TotalGames:
 								orig_action = np.argmax(q_vals)
 								orig_action_tensor = torch.tensor(np.array([orig_action], copy=False))
 						
-						else: 
-							rfgsmIns.set_mode_targeted_by_function(target_map_function=lambda images, labels:labels)
+						else:
+							if targeted == 1: 
+								rfgsmIns.set_mode_targeted_by_function(target_map_function=lambda images, labels:labels)
 							adv_state = rfgsmIns.forward(state_v,orig_action_tensor)						
 							attack_times.append(time.time() - start_attack)
 							q_vals = net(adv_state).data.numpy()[0]
