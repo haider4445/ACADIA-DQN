@@ -11,7 +11,7 @@ def parser():
 	parser.add_argument('--epsRFGSM', nargs = "?", default = 16/255, type = float, help = "Epsilon (strength) of RFGSM attack")
 	parser.add_argument('--totalgames', nargs = "?", default = 10, type = int, help = "total games/episodes")
 	parser.add_argument('--strategy', nargs = "?", default = "allSteps", type = str, help = "Attack strategy: random, allSteps, leastSteps, critical")
-	parser.add_argument('--targeted', nargs = "?", default = -1, type = int, help = "-1 or 1")
+	parser.add_argument('--targeted', nargs = "?", default = 0, type = int, help = "0 or 1")
 	parser.add_argument('--defended', nargs = "?", default = -1, type = int, help = "-1 (non-defended DRL agent) or 1 (RADIAL)")	
 
 	parser.add_argument(
@@ -23,7 +23,7 @@ def parser():
 
 	parser.add_argument(
 	    '--env-config',
-	    default='config.json',
+	    default='configDefended.json',
 	    metavar='EC',
 	    help='environment to crop and resize info (default: config.json)')
 	parser.add_argument(

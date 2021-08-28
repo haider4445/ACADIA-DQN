@@ -26,7 +26,7 @@ from strategy import Strategy
 from parser import parser
 from defendedDQN import CnnDQN
 from defendedEnv import atari_env
-from utils import read_config
+from defendedUtils import read_config
 
 start_time_program = time.time()
 args = parser().parse_args()
@@ -42,11 +42,11 @@ targeted = args.targeted
 defended = args.defended
 
 if args.attack == 1:
-  Doattack = True
-  attack = True
+	Doattack = True
+	attack = True
 else:
-  Doattack = False
-  attack = False
+	Doattack = False
+	attack = False
 
 print(args)
 
@@ -61,12 +61,12 @@ env = make_env(DEFAULT_ENV_NAME)
 if record_folder:
 		env = gym.wrappers.Monitor(env, record_folder, force=True)
 if defended == 1:
-  setup_json = read_config(args.env_config)
-  env_conf = setup_json["Default"]
-  for i in setup_json.keys():
-          if i in args.env:
-              env_conf = setup_json[i]
-  env = atari_env(args.env, env_conf, args)
+	setup_json = read_config(args.env_config)
+	env_conf = setup_json["Default"]
+	for i in setup_json.keys():
+					if i in args.env:
+							env_conf = setup_json[i]
+	env = atari_env(args.env, env_conf, args)
 	net = CnnDQN(env.observation_space.shape[0], env.action_space)
 	#net.load_state_dict(torch.load(model, map_location=lambda storage, loc: storage))
 	net.load_state_dict(torch.load(model, map_location= torch.device('cpu')))
@@ -95,7 +95,6 @@ while Numberofgames != TotalGames:
 			if visualize:
 				env.render()
 			state_v = torch.tensor(np.array([state], copy=False))
-			print(state_v.shape)
 			q_vals = net(state_v).data.numpy()[0]
 			print(state_v.shape)
 			orig_action = np.argmax(q_vals)
@@ -182,7 +181,7 @@ while Numberofgames != TotalGames:
 								orig_action_tensor = torch.tensor(np.array([orig_action], copy=False))
 						
 						else:
-							if targeted == 1: 
+							if targeted != 0:
 								rfgsmIns.set_mode_targeted_by_function(target_map_function=lambda images, labels:labels)
 							adv_state = rfgsmIns.forward(state_v,orig_action_tensor)						
 							attack_times.append(time.time() - start_attack)
@@ -221,16 +220,16 @@ average_reward = total_reward/TotalGames
 print("Average reward: %.2f" % average_reward)
 print("Predicted DRL agent Actions: ", orig_actions)
 if Doattack:
-  average_state_P_time = sum(attack_times)/len(attack_times)
-  successRate = successes/Totalsteps
-  attackRate = Totalsteps/Allsteps
-  print("Adversarial Actions: ", adv_actions)
-  print("Success rate: %.2f" % successRate)
-  print("Total steps Attacked: %f" % Totalsteps)
-  print("Attack rate: %f" % attackRate)
-  print("Total Attack Execution Time: %.2f seconds" % sum(attack_times))
-  print("Average One Perturbed state generation time: %f seconds" % average_state_P_time)
-  print("Attack Times List: %s" % attack_times)
+	average_state_P_time = sum(attack_times)/len(attack_times)
+	successRate = successes/Totalsteps
+	attackRate = Totalsteps/Allsteps
+	print("Adversarial Actions: ", adv_actions)
+	print("Success rate: %.2f" % successRate)
+	print("Total steps Attacked: %f" % Totalsteps)
+	print("Attack rate: %f" % attackRate)
+	print("Total Attack Execution Time: %.2f seconds" % sum(attack_times))
+	print("Average One Perturbed state generation time: %f seconds" % average_state_P_time)
+	print("Attack Times List: %s" % attack_times)
 
 print("Overall Program Execution Time: %.2f seconds" % (time.time() - start_time_program))
 
