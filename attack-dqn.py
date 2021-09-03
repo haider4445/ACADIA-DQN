@@ -87,7 +87,7 @@ elif defended == 2:
 	model_path = args.Path
 	model_width = 1
 	net = model_setup(env_id, env, robust_model, USE_CUDA, dueling, model_width)
-	net.features.load_state_dict(torch.load(model_path))
+	net.features.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
 	#action = net.act(state_tensor)[0]
 else:
 	net = DQN(env.observation_space.shape, env.action_space.n)
@@ -116,8 +116,13 @@ while Numberofgames != TotalGames:
 			if visualize:
 				env.render()
 			state_v = torch.tensor(np.array([state], copy=False))
-			q_vals = net(state_v).data.numpy()[0]
-			orig_action = np.argmax(q_vals)
+			if defended == 2:
+				state_tensor = torch.from_numpy(np.ascontiguousarray(state)).unsqueeze(0).to(torch.float32)
+				orig_action = net.act(state_tensor)[0]
+				print(orig_action)
+			else:
+				q_vals = net(state_v).data.numpy()[0]
+				orig_action = np.argmax(q_vals)
 			orig_action_tensor = torch.tensor(np.array([orig_action], copy=False))
 			if Doattack:
 					if strategy == "random":
@@ -180,10 +185,17 @@ while Numberofgames != TotalGames:
 								print("Attacking...")
 								adv_act = torch.tensor(np.array([adv_acts[i].item()], copy=False))
 								print(adv_act.shape)
-								adv_state = rfgsmIns.forward(state_v,adv_act)
+
+								if defended != 2:
+									adv_state = rfgsmIns.forward(state_tensor,adv_act)
+								else:
+									adv_state = rfgsmIns.forward(state_v,adv_act)
 								attack_times.append(time.time() - start_attack)
-								q_vals = net(adv_state).data.numpy()[0]
-								adv_action = np.argmax(q_vals)
+								if defended == 2:
+									adv_action = net.act(adv_state)[0]
+								else:
+									q_vals = net(adv_state).data.numpy()[0]
+									adv_action = np.argmax(q_vals)
 								state, reward, done, _ = env.step(adv_action)
 								Totalsteps +=1
 								Allsteps += 1
