@@ -85,6 +85,7 @@ elif defended == 2:
 	robust_model = False
 	USE_CUDA = torch.cuda.is_available()
 	model_path = args.Path
+	model_width = 1
 	net = model_setup(env_id, env, robust_model, USE_CUDA, dueling, model_width)
 	net.features.load_state_dict(torch.load(model_path))
 	#action = net.act(state_tensor)[0]
