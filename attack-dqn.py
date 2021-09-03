@@ -27,6 +27,9 @@ from parser import parser
 from defendedDQN import CnnDQN
 from defendedEnv import atari_env
 from defendedUtils import read_config
+from SADQNModel import model_setup
+from SADQNWrapper import make_atari, wrap_deepmind, wrap_pytorch
+
 
 start_time_program = time.time()
 args = parser().parse_args()
@@ -70,6 +73,21 @@ if defended == 1:
 	net = CnnDQN(env.observation_space.shape[0], env.action_space)
 	#net.load_state_dict(torch.load(model, map_location=lambda storage, loc: storage))
 	net.load_state_dict(torch.load(model, map_location= torch.device('cpu')))
+elif defended == 2:
+	env_id = args.env
+	env_params =  {"crop_shift": 10,"restrict_actions": 4}
+	env_params['clip_rewards'] = False
+	env_params['episode_life'] = False
+	env = make_atari(env_id)
+	env = wrap_deepmind(env, **env_params)
+	env = wrap_pytorch(env)
+	dueling = True
+	robust_model = False
+	USE_CUDA = torch.cuda.is_available()
+	model_path = args.Path
+	net = model_setup(env_id, env, robust_model, USE_CUDA, dueling, model_width)
+	net.features.load_state_dict(torch.load(model_path))
+	#action = net.act(state_tensor)[0]
 else:
 	net = DQN(env.observation_space.shape, env.action_space.n)
 	net.load_state_dict(torch.load(model, map_location=lambda storage, loc: storage))
