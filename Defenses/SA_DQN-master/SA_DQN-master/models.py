@@ -6,7 +6,7 @@ import numpy as np
 import sys
 import torch.nn.functional as F
 sys.path.append("./auto_LiRPA")
-from auto_LiRPA import BoundedModule
+from auto_LiRPA.bound_general import BoundedModule
 import math
 
 

@@ -1,7 +1,7 @@
 import sys
 sys.path.append("./common")
 sys.path.append("./auto_LiRPA")
-from auto_LiRPA import BoundedModule, BoundedTensor
+from auto_LiRPA.bound_general import BoundedModule, BoundedTensor
 from auto_LiRPA.perturbations import PerturbationLpNorm
 from argparser import argparser
 import numpy as np
@@ -122,6 +122,8 @@ def main(args):
         # Normalize input pixel to 0-1
         if dtype in UINTS:
             state_tensor /= 255
+
+
 
         if test_config['attack']:
             attack_config['params']['robust_model'] = certify

@@ -81,8 +81,8 @@ elif defended == 2:
 	env = make_atari(env_id)
 	env = wrap_deepmind(env, **env_params)
 	env = wrap_pytorch(env)
-	dueling = True
-	robust_model = False
+	dueling = False
+	robust_model = True
 	USE_CUDA = torch.cuda.is_available()
 	model_path = args.Path
 	model_width = 1
@@ -117,9 +117,8 @@ while Numberofgames != TotalGames:
 				env.render()
 			state_v = torch.tensor(np.array([state], copy=False))
 			if defended == 2:
-				state_tensor = torch.from_numpy(np.ascontiguousarray(state)).unsqueeze(0).to(torch.float32)
-				orig_action = net.act(state_tensor)[0]
-				print(orig_action)
+				state_v = torch.from_numpy(np.ascontiguousarray(state)).unsqueeze(0).to(torch.float32)
+				orig_action = net.act(state_v)[0]
 			else:
 				q_vals = net(state_v).data.numpy()[0]
 				orig_action = np.argmax(q_vals)
@@ -186,10 +185,7 @@ while Numberofgames != TotalGames:
 								adv_act = torch.tensor(np.array([adv_acts[i].item()], copy=False))
 								print(adv_act.shape)
 
-								if defended != 2:
-									adv_state = rfgsmIns.forward(state_tensor,adv_act)
-								else:
-									adv_state = rfgsmIns.forward(state_v,adv_act)
+								adv_state = rfgsmIns.forward(state_v,adv_act)
 								attack_times.append(time.time() - start_attack)
 								if defended == 2:
 									adv_action = net.act(adv_state)[0]
@@ -215,10 +211,14 @@ while Numberofgames != TotalGames:
 						else:
 							if targeted != 0:
 								rfgsmIns.set_mode_targeted_by_function(target_map_function=lambda images, labels:labels)
+							rfgsmIns.forward(state_v,orig_action_tensor)	
 							adv_state = rfgsmIns.forward(state_v,orig_action_tensor)						
 							attack_times.append(time.time() - start_attack)
-							q_vals = net(adv_state).data.numpy()[0]
-							adv_action = np.argmax(q_vals)
+							if defended == 2:
+								adv_action = net.act(adv_state)[0]
+							else:
+								q_vals = net(adv_state).data.numpy()[0]
+								adv_action = np.argmax(q_vals)
 							state, reward, done, _ = env.step(adv_action)
 							Totalsteps +=1
 							Allsteps += 1
