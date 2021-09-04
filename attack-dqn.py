@@ -75,13 +75,13 @@ if defended == 1:
 	net.load_state_dict(torch.load(model, map_location= torch.device('cpu')))
 elif defended == 2:
 	env_id = args.env
-	env_params =  {"crop_shift": 10,"restrict_actions": 4}
+	env_params = {'frame_stack': False, 'color_image': False, 'central_crop': True, 'crop_shift': 10, 'restrict_actions': 4}
 	env_params['clip_rewards'] = False
 	env_params['episode_life'] = False
 	env = make_atari(env_id)
 	env = wrap_deepmind(env, **env_params)
 	env = wrap_pytorch(env)
-	dueling = False
+	dueling = True
 	robust_model = True
 	USE_CUDA = torch.cuda.is_available()
 	model_path = args.Path
