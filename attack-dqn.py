@@ -313,10 +313,12 @@ if Doattack:
 	average_state_P_time_std = np.std(attack_times, axis = 0)
 	successRate = successes/Totalsteps
 	attackRate = Totalsteps/Allsteps
+	avgStepsPerEpisode = Totalsteps/TotalGames
+	avgEpisodeLength = Totalsteps/TotalGames
 	print("Adversarial Actions: ", adv_actions)
 	print("Success rate: %.2f" % successRate)
-	print("Average Steps Attacked per Episode: %.2f" % Totalsteps/TotalGames)	
-	print("Average Episode Length: %.2f" % Totalsteps/TotalGames)
+	print("Average Steps Attacked per Episode: %.2f" % avgStepsPerEpisode)	
+	print("Average Episode Length: %.2f" % avgEpisodeLength)
 	print("Total steps Attacked: %f" % Totalsteps)
 	print("Attack rate: %f" % attackRate)
 	print("Total Attack Execution Time: %.2f seconds" % np.sum(attack_times))
