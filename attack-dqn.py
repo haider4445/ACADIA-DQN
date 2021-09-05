@@ -216,7 +216,7 @@ while Numberofgames != TotalGames:
 						elif perturbationType == "mrfgsm" or perturbationType == "MRFGSM":
 							rfgsmIns = MRFGSM(model = net, targeted = targeted, steps = stepsMRFGSM, eps = epsMRFGSM, alpha = alphaMRFGSM, decay = decayMRFGSM)
 						elif perturbationType == "dmrifgsm" or perturbationType == "DMRIFGSM":
-							rfgsmIns = DMRIFGSM(model = net, targeted = targeted, steps = stepsDMRIFGSM, eps = epsDMRIFGSM, alpha = alphaDMRIFGSM, decay = decayDMRIFGSM, random_start = random_start_decayDMRIFGSM)						
+							rfgsmIns = DMRIFGSM(model = net, targeted = targeted, steps = stepsDMRIFGSM, eps = epsDMRIFGSM, alpha = alphaDMRIFGSM, decay = decayDMRIFGSM, random_start = randomStartDMRIFGSM)						
 						elif perturbationType == "pgd" or perturbationType == "PGD":
 							rfgsmIns = PGD(model = net, targeted = targeted, steps = stepsPGD, eps = epsPGD, alpha = alphaPGD)
 						elif perturbationType == "gn" or perturbationType == "GN":
