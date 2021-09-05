@@ -315,6 +315,8 @@ if Doattack:
 	attackRate = Totalsteps/Allsteps
 	print("Adversarial Actions: ", adv_actions)
 	print("Success rate: %.2f" % successRate)
+	print("Average Steps Attacked per Episode: %.2f" % Totalsteps/TotalGames)	
+	print("Average Episode Length: %.2f" % Totalsteps/TotalGames)
 	print("Total steps Attacked: %f" % Totalsteps)
 	print("Attack rate: %f" % attackRate)
 	print("Total Attack Execution Time: %.2f seconds" % np.sum(attack_times))
