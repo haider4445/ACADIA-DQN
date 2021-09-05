@@ -52,6 +52,7 @@ epsFGSM = args.epsFGSM
 stepsMIFGSM = args.stepsMIFGSM
 alphaMIFGSM = args.alphaMIFGSM
 epsMIFGSM = args.epsMIFGSM
+decayMIFGSM = args.decayMIFGSM
 
 stepsDIFGSM = args.stepsDIFGSM
 alphaDIFGSM = args.alphaDIFGSM
@@ -187,7 +188,7 @@ while Numberofgames != TotalGames:
 						elif perturbationType == "ffgsm" or perturbationType == "FFGSM":
 							rfgsmIns = FFGSM(model = net, targeted = targeted)
 						elif perturbationType == "mifgsm" or perturbationType == "MIFGSM":
-							rfgsmIns = MIFGSM(model = net, targeted = targeted, steps = stepsMIFGSM, eps = epsMIFGSM, alpha = alphaMIFGSM)
+							rfgsmIns = MIFGSM(model = net, targeted = targeted, steps = stepsMIFGSM, eps = epsMIFGSM, alpha = alphaMIFGSM, decay = decayMIFGSM)
 						elif perturbationType == "pgd" or perturbationType == "PGD":
 							rfgsmIns = PGD(model = net, targeted = targeted, steps = stepsPGD, eps = epsPGD, alpha = alphaPGD)
 						elif perturbationType == "gn" or perturbationType == "GN":
