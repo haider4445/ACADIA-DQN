@@ -18,6 +18,7 @@ from ffgsm import FFGSM
 from mifgsm import MIFGSM
 from ifgsm import IFGSM
 from mrfgsm import MRFGSM
+from dmrifgsm import DMRIFGSM
 from pgd import PGD
 from gn import GN
 from tifgsm import TIFGSM
@@ -60,6 +61,12 @@ stepsMRFGSM = args.stepsMRFGSM
 alphaMRFGSM = args.alphaMRFGSM
 epsMRFGSM = args.epsMRFGSM
 decayMRFGSM = args.decayMRFGSM
+
+
+stepsDMRIFGSM = args.stepsDMRIFGSM
+alphaDMRIFGSM = args.alphaDMRIFGSM
+epsDMRIFGSM = args.epsDMRIFGSM
+decayDMRIFGSM = args.decayDMRIFGSM
 
 stepsDIFGSM = args.stepsDIFGSM
 alphaDIFGSM = args.alphaDIFGSM
@@ -204,6 +211,8 @@ while Numberofgames != TotalGames:
 							rfgsmIns = MIFGSM(model = net, targeted = targeted, steps = stepsMIFGSM, eps = epsMIFGSM, alpha = alphaMIFGSM, decay = decayMIFGSM)
 						elif perturbationType == "mrfgsm" or perturbationType == "MRFGSM":
 							rfgsmIns = MRFGSM(model = net, targeted = targeted, steps = stepsMRFGSM, eps = epsMRFGSM, alpha = alphaMRFGSM, decay = decayMRFGSM)
+						elif perturbationType == "dmrifgsm" or perturbationType == "DMRIFGSM":
+							rfgsmIns = DMRIFGSM(model = net, targeted = targeted, steps = stepsDMRIFGSM, eps = epsDMRIFGSM, alpha = alphaDMRIFGSM, decay = decayDMRIFGSM)						
 						elif perturbationType == "pgd" or perturbationType == "PGD":
 							rfgsmIns = PGD(model = net, targeted = targeted, steps = stepsPGD, eps = epsPGD, alpha = alphaPGD)
 						elif perturbationType == "gn" or perturbationType == "GN":

@@ -29,6 +29,7 @@ class MRFGSM(Attack):
         self.steps = steps
         self._supported_mode = ['default', 'targeted']
         self.targeted = targeted
+        self.decay = decay
 
     def forward(self, images, labels):
         r"""

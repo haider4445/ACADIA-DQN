@@ -28,7 +28,6 @@ class IFGSM(Attack):
         super().__init__("IFGSM", model)
         self.eps = eps
         self.steps = steps
-        self.decay = decay
         self.alpha = alpha
         self._supported_mode = ['default', 'targeted']
         self.targeted = targeted

@@ -32,6 +32,10 @@ def parser():
 	parser.add_argument('--epsMRFGSM', nargs = "?", default = 16/255, type = float, help = "Epsilon (strength) of MRFGSM attack")
 	parser.add_argument('--decayMRFGSM', nargs = "?", default = 1.0, type = float, help = "Decay factor of MRFGSM attack")
 	
+	parser.add_argument('--stepsDMRIFGSM', nargs = "?", default = 8, type = int, help = "Number of steps of DMRIFGSM attack")
+	parser.add_argument('--alphaDMRIFGSM', nargs = "?", default = 8/255, type = float, help = "Alpha (Step Size) of DMRIFGSM attack")
+	parser.add_argument('--epsDMRIFGSM', nargs = "?", default = 16/255, type = float, help = "Epsilon (strength) of DMRIFGSM attack")
+	parser.add_argument('--decayDMRIFGSM', nargs = "?", default = 1.0, type = float, help = "Decay factor of DMRIFGSM attack")
 
 
 
