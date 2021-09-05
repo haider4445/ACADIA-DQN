@@ -18,11 +18,22 @@ def parser():
 	parser.add_argument('--alphaFGSM', nargs = "?", default = 1/255, type = float, help = "Alpha (Step Size) of FGSM attack")
 	parser.add_argument('--epsFGSM', nargs = "?", default = 0.007, type = float, help = "Epsilon (strength) of FGSM attack")
 	
+	parser.add_argument('--stepsIFGSM', nargs = "?", default = 8, type = int, help = "Number of steps of IFGSM attack")
+	parser.add_argument('--alphaIFGSM', nargs = "?", default = 8/255, type = float, help = "Alpha (Step Size) of IFGSM attack")
+	parser.add_argument('--epsIFGSM', nargs = "?", default = 16/255, type = float, help = "Epsilon (strength) of IFGSM attack")
+	
 	parser.add_argument('--stepsMIFGSM', nargs = "?", default = 5, type = int, help = "Number of steps of MIFGSM attack")
 	parser.add_argument('--alphaMIFGSM', nargs = "?", default = 2/255, type = float, help = "Alpha (Step Size) of MIFGSM attack")
 	parser.add_argument('--epsMIFGSM', nargs = "?", default = 8/255, type = float, help = "Epsilon (strength) of MIFGSM attack")
 	parser.add_argument('--decayMIFGSM', nargs = "?", default = 1.0, type = float, help = "Decay factor of MIFGSM attack")
 	
+	parser.add_argument('--stepsMRFGSM', nargs = "?", default = 8, type = int, help = "Number of steps of MRFGSM attack")
+	parser.add_argument('--alphaMRFGSM', nargs = "?", default = 8/255, type = float, help = "Alpha (Step Size) of MRFGSM attack")
+	parser.add_argument('--epsMRFGSM', nargs = "?", default = 16/255, type = float, help = "Epsilon (strength) of MRFGSM attack")
+	parser.add_argument('--decayMRFGSM', nargs = "?", default = 1.0, type = float, help = "Decay factor of MRFGSM attack")
+	
+
+
 
 	parser.add_argument('--stepsDIFGSM', nargs = "?", default = 20, type = int, help = "Number of steps of DIFGSM attack")
 	parser.add_argument('--alphaDIFGSM', nargs = "?", default = 2/255, type = float, help = "Alpha (Step Size) of DIFGSM attack")
