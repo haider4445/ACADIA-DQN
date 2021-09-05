@@ -67,6 +67,8 @@ stepsDMRIFGSM = args.stepsDMRIFGSM
 alphaDMRIFGSM = args.alphaDMRIFGSM
 epsDMRIFGSM = args.epsDMRIFGSM
 decayDMRIFGSM = args.decayDMRIFGSM
+randomStartDMRIFGSM = args.randomStartDMRIFGSM
+
 
 stepsDIFGSM = args.stepsDIFGSM
 alphaDIFGSM = args.alphaDIFGSM
@@ -89,11 +91,15 @@ else:
 	Doattack = False
 	attack = False
 
+if randomStartDMRIFGSM == 1:
+	randomStartDMRIFGSM = True
+else:
+	randomStartDMRIFGSM = False
+
+
 print(args)
 
 FPS = 25
-_display = pyvirtualdisplay.Display(visible=False, size=(1400, 900))
-_ = _display.start()
 record_folder="video"  
 visualize=True
 
@@ -151,8 +157,6 @@ while Numberofgames != TotalGames:
 			#attack = True
 
 			start_ts = time.time()
-			if visualize:
-				env.render()
 			state_v = torch.tensor(np.array([state], copy=False))
 			if defended == 2:
 				state_v = torch.from_numpy(np.ascontiguousarray(state)).unsqueeze(0).to(torch.float32)
@@ -188,7 +192,7 @@ while Numberofgames != TotalGames:
 						print("Attack Bool: ", attack)
 
 					if attack:
-						start_attack = time.time()
+						
 						if perturbationType == "optimal":
 							rfgsmIns = RFGSM(model = net, steps = stepsRFGSM)
 						elif perturbationType == "rfgsm" or perturbationType == "RFGSM" or perturbationType == "Rfgsmt":
@@ -212,7 +216,7 @@ while Numberofgames != TotalGames:
 						elif perturbationType == "mrfgsm" or perturbationType == "MRFGSM":
 							rfgsmIns = MRFGSM(model = net, targeted = targeted, steps = stepsMRFGSM, eps = epsMRFGSM, alpha = alphaMRFGSM, decay = decayMRFGSM)
 						elif perturbationType == "dmrifgsm" or perturbationType == "DMRIFGSM":
-							rfgsmIns = DMRIFGSM(model = net, targeted = targeted, steps = stepsDMRIFGSM, eps = epsDMRIFGSM, alpha = alphaDMRIFGSM, decay = decayDMRIFGSM)						
+							rfgsmIns = DMRIFGSM(model = net, targeted = targeted, steps = stepsDMRIFGSM, eps = epsDMRIFGSM, alpha = alphaDMRIFGSM, decay = decayDMRIFGSM, random_start = random_start_decayDMRIFGSM)						
 						elif perturbationType == "pgd" or perturbationType == "PGD":
 							rfgsmIns = PGD(model = net, targeted = targeted, steps = stepsPGD, eps = epsPGD, alpha = alphaPGD)
 						elif perturbationType == "gn" or perturbationType == "GN":
@@ -258,7 +262,7 @@ while Numberofgames != TotalGames:
 								actions = [a for a in range(int(env.action_space.n))]
 								rand_action = random.choice(actions)
 								orig_action_tensor = torch.tensor(np.array([rand_action], copy=False))
-							rfgsmIns.forward(state_v,orig_action_tensor)	
+							start_attack = time.time()
 							adv_state = rfgsmIns.forward(state_v,orig_action_tensor)						
 							attack_times.append(time.time() - start_attack)
 							if defended == 2:
@@ -293,10 +297,6 @@ while Numberofgames != TotalGames:
 				total_rewardPerEpisode = 0
 				Numberofgames += 1
 				break
-			if visualize:
-				delta = 1/FPS - (time.time() - start_ts)
-				if delta > 0:
-					time.sleep(delta)
 
 average_reward = total_reward/TotalGames
 Total_rewards = np.array(Total_rewards)
@@ -328,7 +328,5 @@ if Doattack:
 
 print("Overall Program Execution Time: %.2f seconds" % (time.time() - start_time_program))
 
-sys.exit(0)
-import os
-os._exit(0)
+
 raise SystemExit
