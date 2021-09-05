@@ -14,6 +14,24 @@ def parser():
 	parser.add_argument('--targeted', nargs = "?", default = 0, type = int, help = "0 or 1")
 	parser.add_argument('--defended', nargs = "?", default = -1, type = int, help = "-1 (non-defended DRL agent) or 1 (RADIAL)")	
 
+	parser.add_argument('--stepsFGSM', nargs = "?", default = 1, type = int, help = "Number of steps of FGSM attack")
+	parser.add_argument('--alphaFGSM', nargs = "?", default = 1/255, type = float, help = "Alpha (Step Size) of FGSM attack")
+	parser.add_argument('--epsFGSM', nargs = "?", default = 0.007, type = float, help = "Epsilon (strength) of FGSM attack")
+	
+	parser.add_argument('--stepsMIFGSM', nargs = "?", default = 5, type = int, help = "Number of steps of MIFGSM attack")
+	parser.add_argument('--alphaMIFGSM', nargs = "?", default = 2/255, type = float, help = "Alpha (Step Size) of MIFGSM attack")
+	parser.add_argument('--epsMIFGSM', nargs = "?", default = 8/255, type = float, help = "Epsilon (strength) of MIFGSM attack")
+	
+	parser.add_argument('--stepsDIFGSM', nargs = "?", default = 20, type = int, help = "Number of steps of DIFGSM attack")
+	parser.add_argument('--alphaDIFGSM', nargs = "?", default = 2/255, type = float, help = "Alpha (Step Size) of DIFGSM attack")
+	parser.add_argument('--epsDIFGSM', nargs = "?", default = 8/255, type = float, help = "Epsilon (strength) of DIFGSM attack")
+	
+	parser.add_argument('--stepsPGD', nargs = "?", default = 40, type = int, help = "Number of steps of PGD attack")
+	parser.add_argument('--alphaPGD', nargs = "?", default = 2/255, type = float, help = "Alpha (Step Size) of PGD attack")
+	parser.add_argument('--epsPGD', nargs = "?", default = 0.3, type = float, help = "Epsilon (strength) of PGD attack")
+	
+	parser.add_argument('--stepsCW', nargs = "?", default = 1, type = int, help = "Number of steps of CW attack")
+
 	parser.add_argument(
     '--max-episode-length',
     type=int,

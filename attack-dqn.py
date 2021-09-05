@@ -4,6 +4,7 @@ import numpy as np
 import torch
 import collections
 import pyvirtualdisplay
+import random
 from dqn import DQN, ExperienceReplay, Agent
 from wrappers import make_env
 from rfgsm import RFGSM
@@ -43,6 +44,24 @@ TotalGames = args.totalgames
 strategy = args.strategy
 targeted = args.targeted
 defended = args.defended
+
+stepsFGSM = args.stepsFGSM
+alphaFGSM = args.alphaFGSM
+epsFGSM = args.epsFGSM
+
+stepsMIFGSM = args.stepsMIFGSM
+alphaMIFGSM = args.alphaMIFGSM
+epsMIFGSM = args.epsMIFGSM
+
+stepsDIFGSM = args.stepsDIFGSM
+alphaDIFGSM = args.alphaDIFGSM
+epsDIFGSM = args.epsDIFGSM
+
+stepsPGD = args.stepsPGD
+alphaPGD = args.alphaPGD
+epsPGD = args.epsPGD
+
+stepsCW = args.stepsCW
 
 if args.attack == 1:
 	Doattack = True
@@ -156,21 +175,21 @@ while Numberofgames != TotalGames:
 						elif perturbationType == "rfgsm" or perturbationType == "RFGSM" or perturbationType == "Rfgsmt":
 							rfgsmIns = RFGSM(model = net, targeted = targeted, steps = stepsRFGSM, eps = epsRFGSM, alpha = alphaRFGSM)
 						elif perturbationType == "fgsm" or perturbationType == "FGSM":
-							rfgsmIns = FGSM(model = net, targeted = targeted)
+							rfgsmIns = FGSM(model = net, targeted = targeted, eps = epsFGSM)
 						elif perturbationType == "cw" or perturbationType == "CW":
-							rfgsmIns = CW(model = net, targeted = targeted)
+							rfgsmIns = CW(model = net, targeted = targeted, steps = stepsCW)
 						elif perturbationType == "apgd" or perturbationType == "APGD":
 							rfgsmIns = APGD(model = net, targeted = targeted)
 						elif perturbationType == "apgdt" or perturbationType == "APGDT":
 							rfgsmIns = APGDT(model = net, targeted = targeted)
 						elif perturbationType == "difgsm" or perturbationType == "DIFGSM":
-							rfgsmIns = DIFGSM(model = net, targeted = targeted)
+							rfgsmIns = DIFGSM(model = net, targeted = targeted, steps = stepsDIFGSM, eps = epsDIFGSM, alpha = alphaDIFGSM)
 						elif perturbationType == "ffgsm" or perturbationType == "FFGSM":
 							rfgsmIns = FFGSM(model = net, targeted = targeted)
 						elif perturbationType == "mifgsm" or perturbationType == "MIFGSM":
-							rfgsmIns = MIFGSM(model = net, targeted = targeted)
+							rfgsmIns = MIFGSM(model = net, targeted = targeted, steps = stepsMIFGSM, eps = epsMIFGSM, alpha = alphaMIFGSM)
 						elif perturbationType == "pgd" or perturbationType == "PGD":
-							rfgsmIns = PGD(model = net, targeted = targeted)
+							rfgsmIns = PGD(model = net, targeted = targeted, steps = stepsPGD, eps = epsPGD, alpha = alphaPGD)
 						elif perturbationType == "gn" or perturbationType == "GN":
 							rfgsmIns = GN(model = net, targeted = targeted)
 						elif perturbationType == "tifgsm" or perturbationType == "TIFGSM":
@@ -211,6 +230,9 @@ while Numberofgames != TotalGames:
 						else:
 							if targeted != 0:
 								rfgsmIns.set_mode_targeted_by_function(target_map_function=lambda images, labels:labels)
+								actions = [a for a in range(int(env.action_space.n))]
+								rand_action = random.choice(actions)
+								orig_action_tensor = torch.tensor(np.array([rand_action], copy=False))
 							rfgsmIns.forward(state_v,orig_action_tensor)	
 							adv_state = rfgsmIns.forward(state_v,orig_action_tensor)						
 							attack_times.append(time.time() - start_attack)
@@ -222,9 +244,11 @@ while Numberofgames != TotalGames:
 							state, reward, done, _ = env.step(adv_action)
 							Totalsteps +=1
 							Allsteps += 1
+							orig_actions.append(orig_action)
+							adv_actions.append(adv_action)
 							if adv_action != orig_action:
-								orig_actions.append(orig_action)
-								adv_actions.append(adv_action)
+								# orig_actions.append(orig_action)
+								# adv_actions.append(adv_action)
 								successes +=1
 					else:
 						Allsteps += 1
