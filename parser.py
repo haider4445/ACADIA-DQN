@@ -12,7 +12,7 @@ def parser():
 	parser.add_argument('--totalgames', nargs = "?", default = 10, type = int, help = "total games/episodes")
 	parser.add_argument('--strategy', nargs = "?", default = "allSteps", type = str, help = "Attack strategy: random, allSteps, leastSteps, critical")
 	parser.add_argument('--targeted', nargs = "?", default = 0, type = int, help = "0 or 1")
-	parser.add_argument('--defended', nargs = "?", default = -1, type = int, help = "-1 (non-defended DRL agent) or 1 (RADIAL)")	
+	parser.add_argument('--defended', nargs = "?", default = 0, type = int, help = "-1 (non-defended DRL agent) or 1 (RADIAL)")	
 
 	parser.add_argument('--stepsFGSM', nargs = "?", default = 1, type = int, help = "Number of steps of FGSM attack")
 	parser.add_argument('--alphaFGSM', nargs = "?", default = 1/255, type = float, help = "Alpha (Step Size) of FGSM attack")
