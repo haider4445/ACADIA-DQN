@@ -286,7 +286,10 @@ while Numberofgames != TotalGames:
 							Allsteps += 1
 							orig_actions.append(orig_action)
 							adv_actions.append(adv_action)
-							if adv_action != orig_action:
+							if targeted and rand_action == adv_action:
+								successes += 1
+
+							if targeted == 0 and adv_action != orig_action:
 								# orig_actions.append(orig_action)
 								# adv_actions.append(adv_action)
 								successes +=1
