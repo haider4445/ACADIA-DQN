@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 
-from .Attack import Attack
+from Attack import Attack
 
 
 class APMRFGSM(Attack):
@@ -54,7 +54,7 @@ class APMRFGSM(Attack):
 
             for _ in range(self.steps):
                 adv_images.requires_grad = True
-                outputs = self.model(adv_images)[0]
+                outputs = self.model(adv_images)
 
                 # Calculate loss
                 if self.targeted:
