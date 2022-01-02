@@ -155,6 +155,7 @@ Allsteps = 0
 successes = 0
 attack_times = []
 adv_actions = []
+rand_actions = []
 Total_rewards = []
 total_rewardPerEpisode = 0
 
@@ -272,6 +273,7 @@ while Numberofgames != TotalGames:
 								rfgsmIns.set_mode_targeted_by_function(target_map_function=lambda images, labels:labels)
 								actions = [a for a in range(int(env.action_space.n))]
 								rand_action = random.choice(actions)
+								rand_actions.append(rand_action)
 								orig_action_tensor = torch.tensor(np.array([rand_action], copy=False))
 							start_attack = time.time()
 							adv_state = rfgsmIns.forward(state_v,orig_action_tensor)						
@@ -330,6 +332,7 @@ if Doattack:
 	avgStepsPerEpisode = Totalsteps/TotalGames
 	avgEpisodeLength = Totalsteps/TotalGames
 	print("Adversarial Actions: ", adv_actions)
+	print("Random Actions: ", rand_actions)
 	print("Success rate: %.2f" % successRate)
 	print("Average Steps Attacked per Episode: %.2f" % avgStepsPerEpisode)	
 	print("Average Episode Length: %.2f" % avgEpisodeLength)
