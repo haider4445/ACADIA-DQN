@@ -74,12 +74,9 @@ class APMRFGSM(Attack):
                 grad = accumulated_grad/torch.sqrt(accumulated_squared_grad)
 
 
-                adv_images = adv_images.detach() - self.alpha*grad
+                adv_images = adv_images.detach() + self.alpha*grad.sign()
                 delta = torch.clamp(adv_images - images, min=-self.eps, max=self.eps)
                 adv_images = torch.clamp(images + delta, min=0, max=1).detach()
 
-                if cost < last_cost:
-                    best_adverse_state = adv_images
-                    last_cost = cost
 
-        return best_adverse_state
+        return adv_images
