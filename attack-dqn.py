@@ -19,6 +19,7 @@ from mifgsm import MIFGSM
 from ifgsm import IFGSM
 from mrfgsm import MRFGSM
 from apmrfgsm import APMRFGSM
+from airfgm import AIRFGM
 from dmrifgsm import DMRIFGSM
 from pgd import PGD
 from gn import GN
@@ -227,6 +228,8 @@ while Numberofgames != TotalGames:
 							rfgsmIns = MRFGSM(model = net, targeted = targeted, steps = stepsMRFGSM, eps = epsMRFGSM, alpha = alphaMRFGSM, decay = decayMRFGSM)
 						elif perturbationType == "apmrfgsm" or perturbationType == "APMRFGSM":
 							rfgsmIns = APMRFGSM(model = net, targeted = targeted, steps = stepsAPMRFGSM, eps = epsAPMRFGSM, alpha = alphaAPMRFGSM, decay = decayAPMRFGSM, decay2 = decay2APMRFGSM)      
+						elif perturbationType == "apmrfgsm" or perturbationType == "APMRFGSM":
+							rfgsmIns = AIRFGM(model = net, targeted = targeted, steps = stepsAPMRFGSM, eps = epsAPMRFGSM, alpha = alphaAPMRFGSM, decay = decayAPMRFGSM, decay2 = decay2APMRFGSM)      
 						elif perturbationType == "dmrifgsm" or perturbationType == "DMRIFGSM":
 							rfgsmIns = DMRIFGSM(model = net, targeted = targeted, steps = stepsDMRIFGSM, eps = epsDMRIFGSM, alpha = alphaDMRIFGSM, decay = decayDMRIFGSM, random_start = randomStartDMRIFGSM)						
 						elif perturbationType == "pgd" or perturbationType == "PGD":

@@ -41,8 +41,8 @@ def parser():
 	parser.add_argument('--stepsAPMRFGSM', nargs = "?", default = 20, type = int, help = "Number of steps of APMRFGSM attack")
 	parser.add_argument('--alphaAPMRFGSM', nargs = "?", default = 2/255, type = float, help = "Alpha (Step Size) of APMRFGSM attack")
 	parser.add_argument('--epsAPMRFGSM', nargs = "?", default = 8/255, type = float, help = "Epsilon (strength) of APMRFGSM attack")
-	parser.add_argument('--decayAPMRFGSM', nargs = "?", default = 0.7, type = float, help = "Decay factor of APMRFGSM attack")
-	parser.add_argument('--decay2APMRFGSM', nargs = "?", default = 0.9, type = float, help = "Decay factor of APMRFGSM attack")
+	parser.add_argument('--decayAPMRFGSM', nargs = "?", default = 0.99, type = float, help = "Decay factor of APMRFGSM attack")
+	parser.add_argument('--decay2APMRFGSM', nargs = "?", default = 0.999, type = float, help = "Decay factor of APMRFGSM attack")
 
 	parser.add_argument('--stepsDIFGSM', nargs = "?", default = 20, type = int, help = "Number of steps of DIFGSM attack")
 	parser.add_argument('--alphaDIFGSM', nargs = "?", default = 2/255, type = float, help = "Alpha (Step Size) of DIFGSM attack")
