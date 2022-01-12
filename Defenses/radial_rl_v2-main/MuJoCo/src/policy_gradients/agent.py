@@ -1348,7 +1348,7 @@ class Trainer():
         alpha = params['alpha']
         decay = params['decay']
         perturbationType = params['perturbationType']
-        decay2 = 0.99
+        decay2 = 0.999
 
         if perturbationType == "rfgsm" or perturbationType == "RFGSM" or perturbationType == "Rfgsmt":
             rfgsmIns = RFGSM(model = net, targeted = targeted, steps = steps, eps = eps, alpha = alpha)
@@ -1380,7 +1380,7 @@ class Trainer():
         return adv_states, time_taken
 
     def compute_success(self, true_actions, action_pds, threshold):
-        threshold = 0.2
+        threshold = 0.1
         MAE = mean_absolute_error(true_actions, action_pds)
         if MAE > threshold:
             return 1

@@ -22,7 +22,7 @@ class APMRFGSM(Attack):
         >>> attack = torchattacks.RFGSM(model, eps=16/255, alpha=8/255, steps=1)
         >>> adv_images = attack(images, labels)
     """
-    def __init__(self, model, targeted = -1, eps=16/255, alpha=8/255, steps=8, decay = 0.7, decay2 = 0.999):
+    def __init__(self, model, targeted = -1, eps=16/255, alpha=8/255, steps=8, decay = 0.99, decay2 = 0.999):
         super().__init__("APMRFGSM", model)
         self.eps = eps
         self.alpha = alpha
@@ -74,7 +74,7 @@ class APMRFGSM(Attack):
                 grad = accumulated_grad/torch.sqrt(accumulated_squared_grad)
 
 
-                adv_images = adv_images.detach() + self.alpha*grad.sign()
+                adv_images = adv_images.detach() + self.alpha*grad
                 delta = torch.clamp(adv_images - images, min=-self.eps, max=self.eps)
                 adv_images = torch.clamp(images + delta, min=0, max=1).detach()
 
