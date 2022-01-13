@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import numpy as np
 
-from .Attack import Attack
+from Attack import Attack
 
 
 class AIRFGM(Attack):
