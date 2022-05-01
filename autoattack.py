@@ -31,7 +31,7 @@ class AutoAttack(Attack):
         >>> attack = torchattacks.AutoAttack(model, norm='Linf', eps=.3, version='standard', n_classes=10, seed=None, verbose=False)
         >>> adv_images = attack(images, labels)
     """
-    def __init__(self, model, targeted = 0, norm='Linf', eps=.3, version='standard', n_classes=10, seed=None, verbose=False):
+    def __init__(self, model, steps = 100, targeted = 0, norm='Linf', eps=.3, version='standard', n_classes=10, seed=None, verbose=False):
         super().__init__("AutoAttack", model)
         self.norm = norm
         self.eps = eps
@@ -44,8 +44,8 @@ class AutoAttack(Attack):
 
         if version == 'standard':
             self.autoattack = MultiAttack([
-                APGD(model, eps=eps, norm=norm, seed=self.get_seed(), verbose=verbose, loss='ce', n_restarts=1),
-                APGDT(model, eps=eps, norm=norm, seed=self.get_seed(), verbose=verbose, n_classes=n_classes, n_restarts=1),
+                APGD(model, steps, eps=eps, norm=norm, seed=self.get_seed(), verbose=verbose, loss='ce', n_restarts=1),
+                APGDT(model, steps, eps=eps, norm=norm, seed=self.get_seed(), verbose=verbose, n_classes=n_classes, n_restarts=1),
                 FAB(model, eps=eps, norm=norm, seed=self.get_seed(), verbose=verbose, n_classes=n_classes, n_restarts=1),
                 Square(model, eps=eps, norm=norm, seed=self.get_seed(), verbose=verbose, n_queries=5000, n_restarts=1),
             ])

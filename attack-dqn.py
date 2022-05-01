@@ -96,6 +96,7 @@ epsPGD = args.epsPGD
 stepsCW = args.stepsCW
 
 epsAutoAttack = args.epsAutoAttack
+stepsAutoAttack = args.stepsAutoAttack
 
 if args.attack == 1:
 	Doattack = True
@@ -213,7 +214,7 @@ while Numberofgames != TotalGames:
 						elif perturbationType == "rfgsm" or perturbationType == "RFGSM" or perturbationType == "Rfgsmt":
 							rfgsmIns = RFGSM(model = net, targeted = targeted, steps = stepsRFGSM, eps = epsRFGSM, alpha = alphaRFGSM)
 						elif perturbationType == "autoattack" or perturbationType == "AutoAttack" or perturbationType == "AUTOATTACK":
-							rfgsmIns = AutoAttack(model = net, targeted = targeted,  eps = epsAutoAttack)
+							rfgsmIns = AutoAttack(model = net, targeted = targeted,  eps = epsAutoAttack, steps = stepsAutoAttack, n_classes = env.action_space.n)
 						elif perturbationType == "fgsm" or perturbationType == "FGSM":
 							rfgsmIns = FGSM(model = net, targeted = targeted, eps = epsFGSM)
 						elif perturbationType == "cw" or perturbationType == "CW":

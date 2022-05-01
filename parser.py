@@ -53,6 +53,7 @@ def parser():
 	parser.add_argument('--epsPGD', nargs = "?", default = 8/255, type = float, help = "Epsilon (strength) of PGD attack")
 
 	parser.add_argument('--epsAutoAttack', nargs = "?", default = 8/255, type = float, help = "Epsilon (strength) of Auto attack")
+	parser.add_argument('--stepsAutoAttack', nargs = "?", default = 100, type = float, help = "Number of steps of Auto attack")
 	
 	parser.add_argument('--stepsCW', nargs = "?", default = 1000, type = int, help = "Number of steps of CW attack")
 
