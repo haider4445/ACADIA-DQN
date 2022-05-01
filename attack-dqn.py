@@ -10,6 +10,7 @@ from wrappers import make_env
 from rfgsm import RFGSM
 from fgsm import FGSM
 from cw import CW
+from autoattack import AutoAttack
 from deepfool import DeepFool
 from apgdt import APGDT
 from apgd import APGD
@@ -94,6 +95,8 @@ epsPGD = args.epsPGD
 
 stepsCW = args.stepsCW
 
+epsAutoAttack = args.epsAutoAttack
+
 if args.attack == 1:
 	Doattack = True
 	attack = True
@@ -146,6 +149,7 @@ elif defended == 2:
 else:
 	net = DQN(env.observation_space.shape, env.action_space.n)
 	net.load_state_dict(torch.load(model, map_location=lambda storage, loc: storage))
+
 
 print("Done Loading Model")
 Numberofgames = 0
@@ -208,6 +212,8 @@ while Numberofgames != TotalGames:
 							rfgsmIns = RFGSM(model = net, steps = stepsRFGSM)
 						elif perturbationType == "rfgsm" or perturbationType == "RFGSM" or perturbationType == "Rfgsmt":
 							rfgsmIns = RFGSM(model = net, targeted = targeted, steps = stepsRFGSM, eps = epsRFGSM, alpha = alphaRFGSM)
+						elif perturbationType == "autoattack" or perturbationType == "AutoAttack" or perturbationType == "AUTOATTACK":
+							rfgsmIns = AutoAttack(model = net, targeted = targeted,  eps = epsAutoAttack)
 						elif perturbationType == "fgsm" or perturbationType == "FGSM":
 							rfgsmIns = FGSM(model = net, targeted = targeted, eps = epsFGSM)
 						elif perturbationType == "cw" or perturbationType == "CW":

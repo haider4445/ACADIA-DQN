@@ -1,9 +1,10 @@
 import time
 
 from Attack import Attack
+
 from multiattack import MultiAttack
-from apgdt import APGDT
 from apgd import APGD
+from apgdt import APGDT
 from fab import FAB
 from square import Square
 
@@ -30,7 +31,7 @@ class AutoAttack(Attack):
         >>> attack = torchattacks.AutoAttack(model, norm='Linf', eps=.3, version='standard', n_classes=10, seed=None, verbose=False)
         >>> adv_images = attack(images, labels)
     """
-    def __init__(self, model, norm='Linf', eps=.3, version='standard', n_classes=10, seed=None, verbose=False):
+    def __init__(self, model, targeted = 0, norm='Linf', eps=.3, version='standard', n_classes=10, seed=None, verbose=False):
         super().__init__("AutoAttack", model)
         self.norm = norm
         self.eps = eps
@@ -38,6 +39,7 @@ class AutoAttack(Attack):
         self.n_classes = n_classes
         self.seed = seed
         self.verbose = verbose
+        self._targeted = targeted
         self._supported_mode = ['default']
 
         if version == 'standard':

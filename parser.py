@@ -51,6 +51,8 @@ def parser():
 	parser.add_argument('--stepsPGD', nargs = "?", default = 20, type = int, help = "Number of steps of PGD attack")
 	parser.add_argument('--alphaPGD', nargs = "?", default = 2/255, type = float, help = "Alpha (Step Size) of PGD attack")
 	parser.add_argument('--epsPGD', nargs = "?", default = 8/255, type = float, help = "Epsilon (strength) of PGD attack")
+
+	parser.add_argument('--epsAutoAttack', nargs = "?", default = 8/255, type = float, help = "Epsilon (strength) of Auto attack")
 	
 	parser.add_argument('--stepsCW', nargs = "?", default = 1000, type = int, help = "Number of steps of CW attack")
 

@@ -363,7 +363,7 @@ def get_parser():
     # parser.add_argument('--compound_step', type=int, default=10, help='number of compound attack steps')
     # parser.add_argument('--compound_step', type=int, default=10, help='number of compound attack steps')
     parser.add_argument('--load-dynamical-model', type=str, help='load a pretrained dynamical model file', default='dynamics.model')
-    parser.add_argument('--steps', nargs = "?", default = 1000, type = int, help = "Number of steps ")
+    parser.add_argument('--steps', nargs = "?", default = 120, type = int, help = "Number of steps ")
     parser.add_argument('--alpha', nargs = "?", default = 2/255, type = float, help = "Alpha (Step Size)")
     parser.add_argument('--eps', nargs = "?", default = 8/255, type = float, help = "Epsilon (strength)")
     parser.add_argument('--decay', nargs = "?", default = 0.99, type = float, help = "Decay factor")

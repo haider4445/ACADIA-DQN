@@ -16,6 +16,7 @@ from collections import abc as container_abcs
 from Attack import Attack
 
 
+
 class FAB(Attack):
     r"""
     Fast Adaptive Boundary Attack in the paper 'Minimally distorted Adversarial Examples with a Fast Adaptive Boundary Attack'
